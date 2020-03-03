@@ -1,19 +1,20 @@
 {
-  "name": "uw-cse442-fp-submission",
+  "name": "uw-cse442-a3-submission",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
     "start": "parcel src/index.html",
-    "build": "parcel build src/index.html --no-minify --public-url https://uw-cse442-wi20.github.io/FP-wifi-crime-and-sat-scores-of-nyc/; rm -rf docs; mv dist docs;",
+    "build": "parcel build src/index.html --public-url https://uw-cse442-wi20.github.io/A3-sat-scores-nyc/; rm -rf docs; mv dist docs;",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
   "devDependencies": {
-    "parcel-bundler": "^1.12.4",
-    "parcel-plugin-static-files-copy": "^2.3.1"
+    "parcel-bundler": "^1.12.4"
   },
   "dependencies": {
-    "d3": "^5.15.0"
+    "d3": "^5.15.0",
+    "d3-simple-slider": "^1.5.4",
+    "jquery": "^3.4.1"
   }
 }
