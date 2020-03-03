@@ -1,1 +1,72 @@
-<!DOCTYPE html><html><head><meta charset="utf-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1"><title>SAT Scores Distribution</title><style>#reading{padding-top:0}</style><link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous"><script src="https://d3js.org/d3.v5.js"></script><script src="https://unpkg.com/d3-simple-slider" c=""></script></head><body> <h1 style="margin-left:150px;margin-top:40px;margin-bottom:40px;">SAT Scores by High School in NYC</h1> <div class="d-flex flex-row"> <div class="col-1"></div>  <div class="col-5"> <div id="map"></div>  </div> <div class="col-5">  <p>Click on a school district to display its overall SAT stats, or select a specific school in the lower right map for school-specific SAT stats. Click the button before beginning.</p> <div id="stats" style="background-color:#fff"> </div> <div id="chart1" style="background-color:#fff"> </div> <div id="map-zoomed" style="background-color:#fff;margin-top:30px"> </div> </div> </div> <div id="flexRow" class="d-flex flex-row" style="margin-top:30px"> <div class="col-1"></div>  <button id="buttonFinish" type="button" class="btn btn-dark" style="margin-left:15px">Begin Exploring</button> </div> <div id="flexRowSliders" class="d-flex flex-row" style="margin-top:30px"> <div class="col-1"></div>  <div class="col-3"> <div id="math" class="d3-slider d3-slider-horizontal"></div>  <p id="mathText" class="text-center">Average Score (SAT Math)</p> </div> <div class="col-3"> <div id="reading" class="d3-slider d3-slider-horizontal"></div>  <p id="readingText" class="text-center">Average Score (SAT Reading)</p> </div> <div class="col-3"> <div id="writing" class="d3-slider d3-slider-horizontal"></div>  <p id="writingText" class="text-center">Average Score (SAT Writing)</p> </div> </div> <script src="https://uw-cse442-wi20.github.io/A3-sat-scores-nyc/src.12ff054e.js"></script>  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script> <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script> <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script> </body></html>
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>SAT Scores Distribution</title>
+
+    <style>#reading {
+        padding-top: 0px;
+      }</style>
+
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    <script src="https://d3js.org/d3.v5.js"></script>
+    <script src="https://unpkg.com/d3-simple-slider" c=""></script>
+  </head>
+
+  <body>
+    <h1 style="margin-left: 150px; margin-top: 40px; margin-bottom: 40px;">SAT Scores by High School in NYC</h1>   
+    
+    <div class="d-flex flex-row">
+      <div class="col-1"></div>  <!-- blank column for padding -->
+
+      <div class="col-5">
+        <div id="map"></div>  <!-- map element -->
+      </div>
+
+      <div class="col-5">  <!-- distribution chart and zoomed in map -->
+        <p>Click on a school district to display its overall SAT stats, or select a specific school in the lower right map for school-specific SAT stats. Click the button before beginning.</p>
+        <div id="stats" style="background-color:white"> </div>
+        <div id="chart1" style="background-color:white"> </div>
+        <div id="map-zoomed" style="background-color:white; margin-top:30px">
+        </div>
+      </div>
+    </div>    
+
+    <div id="flexRow" class="d-flex flex-row" style="margin-top:30px">
+      <div class="col-1"></div>  <!-- blank column for padding -->
+      <button id="buttonFinish" type="button" class="btn btn-dark" style="margin-left:15px">Begin Exploring</button>
+    </div>
+
+    <div id="flexRowSliders" class="d-flex flex-row" style="margin-top:30px">
+      <div class="col-1"></div>  <!-- blank column for padding -->
+
+      <div class="col-3">
+        <div id="math" class="d3-slider d3-slider-horizontal"></div>  <!-- slider element -->
+        <p id="mathText" class="text-center">Average Score (SAT Math)</p>
+      </div>
+
+      <div class="col-3">
+        <div id="reading" class="d3-slider d3-slider-horizontal"></div>  <!-- slider element -->
+        <p id="readingText" class="text-center">Average Score (SAT Reading)</p>
+      </div>
+
+      <div class="col-3">
+        <div id="writing" class="d3-slider d3-slider-horizontal"></div>  <!-- slider element -->
+        <p id="writingText" class="text-center">Average Score (SAT Writing)</p>
+      </div>
+    </div>    
+    
+    <script src="https://uw-cse442-wi20.github.io/FP-wifi-crime-and-sat-scores-of-nyc/src.3e8e2e23.js"></script>
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+        
+  </body>
+
+
+</html>
