@@ -35,7 +35,7 @@ var pointStrokeWidth = 0.7;
 var pointOpacity = 1;
 
 // ZOOMED MAP VARIABLES ////////////////////////////////////////////////////////
-var mapScaleFactor = 1.2; // Scale zoomed map to desired dimensions
+var mapScaleFactor = 1.35; // Scale zoomed map to desired dimensions
 var mapZWidth = 350 * mapScaleFactor; // DO NOT CHANGE
 var mapZHeight = 350 * mapScaleFactor; // DO NOT CHANGE
 var mapZStrokeWidth = 2;
@@ -68,11 +68,6 @@ var rangeWriting = [200, 800];
 var sliderWidth = 500;
 var sliderHeight = 75;
 
-// NARRATIVE VARIABLES /////////////////////////////////////////////////////////
-var lowScoreDistricts = ["sd8", "sd12", "sd11", "sd29", "sd24", "sd19", "sd32", 
-                  "sd16", "sd23", "sd17", "sd18", "sd21", "sd20", "sd9", "sd7"]
-var tutorialActive = true;
-
 // START FUNCTIONS /////////////////////////////////////////////////////////////
 
 // Remap SD geo data to correct keys
@@ -92,7 +87,6 @@ d3.csv(sdScoreAvgsCsv).then(function(d) {
 
 // MAP MOUSE EVENTS ////////////////////////////////////////////////////////////
 let overviewMouseOver = function(d) { // Highlight SD on mouseover
-  if (tutorialActive) { return; }
   d3.select(this) // Highlight overview target SD
       .transition()
       .duration(mouseTransDuration)
@@ -101,7 +95,6 @@ let overviewMouseOver = function(d) { // Highlight SD on mouseover
 };
 
 let overviewMouseLeave = function(d) { // Unhighlight SD on mouse leave
-  if (tutorialActive) { return; }
   if (selected != this) { // Do not de-highlight selected SD
     d3.select(this) // De-highlight overview target SD
         .transition()
@@ -111,7 +104,6 @@ let overviewMouseLeave = function(d) { // Unhighlight SD on mouse leave
 };
 
 let overviewMouseClick = function(d) { //De/select SD on mouse click
-  if (tutorialActive) { return; }
   var unselect = this === selected;
   if (selected) { // Unselect selected SD if one exists
     statBox.selectAll('text').remove();
@@ -181,10 +173,11 @@ let overviewMouseClick = function(d) { //De/select SD on mouse click
     //svg.call(d3.axisTop(x));
 
 
-    var center = 100;
-    var height = 100;
+    var center = 40;
+    var height = 40;
     var offset = 40;
     // Add the main line
+
     svg
     .select("#h")
       .transition()
@@ -193,7 +186,6 @@ let overviewMouseClick = function(d) { //De/select SD on mouse click
       .attr("x1", x(min_all) + offset)
       .attr("x2", x(max_all) + offset)
       .attr("stroke", "black")
-
     // Show the box
 
     svg
@@ -260,10 +252,12 @@ let overviewMouseClick = function(d) { //De/select SD on mouse click
 
 // SECTION FOR BOX PLOT ////////////////////////////
 
+var mapZWidthOriginal = 350 * 1.2;
+
 var svg = d3.select("#chart1")
     .append("svg")
-      .attr("width", mapZWidth + 75)
-      .attr("height", 200)
+      .attr("width", mapZWidthOriginal + 75)
+      .attr("height", 130)
       .attr('x', 0)
       .attr('y', 0)
       .attr("transform",
@@ -272,8 +266,8 @@ var svg = d3.select("#chart1")
 svg.append('rect')
   .attr('x', 0)
   .attr('y', 0)
-  .attr('height', 200)
-  .attr('width', mapZWidth + 75) // 420
+  .attr('height', 130)
+  .attr('width', mapZWidthOriginal + 75) // 420
   .style('stroke', mapBorderColor)
   .style('fill', 'none')
   .style('stroke-width', mapBorderW);
@@ -285,7 +279,7 @@ var x = d3.scaleLinear()
   //.attr("transform", "translate(0, 250)");
 
 svg.append("g")
-     .attr("transform", "translate(40, 180)")
+     .attr("transform", "translate(40, 100)")
      .call(d3.axisTop(x));
 
 svg
@@ -547,13 +541,13 @@ let inRange = function(value, range) { // True if range[0] <= value <= range[1]
 // STAT BOX//// ////////////////////////////////////////////////////////////////
 var statBox = d3.select('#stats') // Create stat box
   .append('svg')
-  .attr('width', mapZWidth + 75)
+  .attr('width', mapZWidthOriginal + 73)
   .attr('height', 110);
 statBox.append('rect')
   .attr('x', 0)
   .attr('y', 0)
   .attr('height', 110)
-  .attr('width', mapZWidth + 75)
+  .attr('width', mapZWidthOriginal + 73)
   .style('stroke', mapBorderColor)
   .style('fill', 'none')
   .style('stroke-width', mapBorderW);
@@ -575,25 +569,26 @@ let updateDistrictStats = function(district) {
     .attr('x', '2em')
     .attr('y', '4.5em')
     .attr('d', '0.5em')
-    .text('Average total score: ' + (+sd.math_avg + +sd.read_avg + +sd.write_avg));
+    .text('Average Total Score: ' + (+sd.math_avg + +sd.read_avg + +sd.write_avg))
+    .style('fill', 'red');
 
   statBox.append('text')
   .attr('x', '16em')
   .attr('y', '3em')
   .attr('d', '0.5em')
-  .text("Average math score: " + sd.math_avg);
+  .text("Average Math Score: " + sd.math_avg);
 
   statBox.append('text')
   .attr('x', '16em')
   .attr('y', '4.5em')
   .attr('d', '0.5em')
-  .text("Average reading score: " + sd.read_avg);
+  .text("Average Reading Score: " + sd.read_avg);
 
   statBox.append('text')
   .attr('x', '16em')
   .attr('y', '6em')
   .attr('d', '0.5em')
-  .text("Average writing score: " + sd.write_avg);
+  .text("Average Writing Score: " + sd.write_avg);
 }
 
 let updateStats = function(d) {
@@ -629,19 +624,19 @@ let updateStats = function(d) {
     .attr('x', '16em')
     .attr('y', '3em')
     .attr('d', '0.5em')
-    .text("Average math score: " + d[math]);
+    .text("Average Math Score: " + d[math]);
 
   statBox.append('text')
     .attr('x', '16em')
     .attr('y', '4.5em')
     .attr('d', '0.5em')
-    .text("Average reading score: " + d[reading]);
+    .text("Average Reading Score: " + d[reading]);
 
   statBox.append('text')
     .attr('x', '16em')
     .attr('y', '6em')
     .attr('d', '0.5em')
-    .text("Average writing score: " + d[writing]);
+    .text("Average Writing Score: " + d[writing]);
 }
 
 // SLIDER ELEMENT //////////////////////////////////////////////////////////////
@@ -691,123 +686,20 @@ sliderRangeWriting.on('onchange', val => {
 var gRangeWriting = createSliderSvg('#writing');
 gRangeWriting.call(sliderRangeWriting);
 
-// BUTTONS /////////////////////////////////////////////////////////////////////
-$('#buttonFinish').on('click', function(event) { // Finished button
-  tutorialActive = false;
-  $('#flexRow').remove();
-  $('#math').fadeIn(500, function() {
-    $(this).show();
-  });
-  $('#mathText').fadeIn(500, function() {
-    $(this).show();
-  });
-  $('#reading').fadeIn(500, function() {
-    $(this).show();
-  });
-  $('#readingText').fadeIn(500, function() {
-    $(this).show();
-  });
-  $('#writing').fadeIn(500, function() {
-    $(this).show();
-  });
-  $('#writingText').fadeIn(500, function() {
-    $(this).show();
-  });
+// RADIO BUTTON FUNCTIONALITY
 
-  mapZ.selectAll('text') // Remove narrative text
-      .transition()
-      .duration(200)
-      .style('opacity', 0)
-      .remove()
-
-  map.selectAll("path") // Return overview map to default fill color
-      .attr("fill", function(d) {
-          return mapFillColor;
-      });
+$('#wifiButton').on('click', function(event) {
+  console.log("wifi button clicked");
 });
 
-// Adds trend for states that are below average
-let preButton = function() {
-  $('#math').hide();
-  $('#mathText').hide();
-  $('#reading').hide();
-  $('#readingText').hide();
-  $('#writing').hide();
-  $('#writingText').hide();
+$('#noiseButton').on('click', function(event) {
+  console.log("noise clicked");
+});
 
-  map.selectAll("path")
-  .attr("fill", function(d) {
-    if (lowScoreDistricts.indexOf(this.id) >= 0) {
-      return 'red';
-    } else {
-      return mapFillColor;
-    }
-  });
+$('#incomeButton').on('click', function(event) {
+  console.log("income clicked");
+});
 
-  mapZ.append('text')
-  .attr('x', '1em')
-  .attr('y', '2em')
-  .attr('d', '0.5em')
-  .text("If you take the southern part of New York City as the ");
-
-  mapZ.append('text')
-  .attr('x', '1em')
-  .attr('y', '3.2em')
-  .attr('d', '0.5em')
-  .text("center of interest and you start increasing the minimum");
-
-  mapZ.append('text')
-  .attr('x', '1em')
-  .attr('y', '4.4em')
-  .attr('d', '0.5em')
-  .text("score of each subject, you notice that as we move away" );
-
-  mapZ.append('text')
-  .attr('x', '1em')
-  .attr('y', '5.6em')
-  .attr('d', '0.5em')
-  .text("from the southern part, the schools' performance tends");
-
-  mapZ.append('text')
-  .attr('x', '1em')
-  .attr('y', '6.8em')
-  .attr('d', '0.5em')
-  .text("to get better.");
-
-  mapZ.append('text')
-  .attr('x', '1em')
-  .attr('y', '9.8em')
-  .attr('d', '0.5em')
-  .text("The districts highlighted red indicate the districts that");
-
-  mapZ.append('text')
-  .attr('x', '1em')
-  .attr('y', '11em')
-  .attr('d', '0.5em')
-  .text("did not contain a single school that perfomed better than");
-
-  mapZ.append('text')
-  .attr('x', '1em')
-  .attr('y', '12.2em')
-  .attr('d', '0.5em')
-  .text("the SAT national average for a particular subject.");
-
-  mapZ.append('text')
-  .attr('x', '1em')
-  .attr('y', '15.2em')
-  .attr('d', '0.5em')
-  .text("You can use the sliders at the bottom to filter out");
-
-  mapZ.append('text')
-  .attr('x', '1em')
-  .attr('y', '16.4em')
-  .attr('d', '0.5em')
-  .text("various schools depending on how they performed for");
-
-  mapZ.append('text')
-  .attr('x', '1em')
-  .attr('y', '17.6em')
-  .attr('d', '0.5em')
-  .text("a given subject. Click on a district to zoom in.");  
-}
-preButton();
+$('#arrestsButton').on('click', function(event) {
+  console.log("arrests clicked");
+});

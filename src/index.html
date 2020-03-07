@@ -19,31 +19,52 @@
     <script src="https://unpkg.com/d3-simple-slider" c></script>
   </head>
 
-  <body>
-    <h1 style="margin-left: 150px; margin-top: 40px; margin-bottom: 40px;">SAT Scores by High School in NYC</h1>   
+  <body>   
     
     <div class="d-flex flex-row">
-      <div class="col-1"></div>  <!-- blank column for padding -->
+      <div class="col-1"></div>
 
       <div class="col-5">
-        <div id="map"></div>  <!-- map element -->
-      </div>
-
-      <div class="col-5">  <!-- distribution chart and zoomed in map -->
-        <p>Click on a school district to display its overall SAT stats, or select a specific school in the lower right map for school-specific SAT stats. Click the button before beginning.</p>
-        <div id="stats" style="background-color:white"> </div>
-        <div id="chart1" style="background-color:white"> </div>
-        <div id="map-zoomed" style="background-color:white; margin-top:30px">
+        <div style="width:420px; margin-left: 160px; margin-top: 20px">
+          <div id="centered" style="margin: 0 auto; width:420px;">
+            <p><b>Select a feature to underlay as a density map below.</b></p>
+          </div>
         </div>
-      </div>
-    </div>    
+    
+        <div class="btn-group btn-group-toggle" data-toggle="buttons" style="margin-left: 150px; margin-bottom: 25px;">
+          <label class="btn btn-secondary active" id="wifiButton">
+            <input type="radio" name="options" autocomplete="off" checked> Wi-Fi Hotspots
+          </label>
+          <label class="btn btn-secondary" id="noiseButton">
+            <input type="radio" name="options" autocomplete="off"> Noise Complaints
+          </label>
+          <label class="btn btn-secondary" id="incomeButton" >
+            <input type="radio" name="options" autocomplete="off"> Income
+          </label>
+          <label class="btn btn-secondary" id="arrestsButton">
+            <input type="radio" name="options" autocomplete="off"> Arrests
+          </label>
+        </div>
+    
+        <div style="width:600px; margin-left: 70px; margin-bottom: 20px;">
+          <div id="centered" style="margin: 0 auto; width:600px;">
+            <p>Click on a school district on the map below to display its overall SAT stats, or go ahead and select a specific school on the map to the right for school-specific SAT stats.</p>
+          </div>
+        </div>
 
-    <div id="flexRow" class="d-flex flex-row" style="margin-top:30px">
-      <div class="col-1"></div>  <!-- blank column for padding -->
-      <button id="buttonFinish" type="button" class="btn btn-dark" style="margin-left:15px">Begin Exploring</button>
+        <div id="map" style="margin-left: 50px"></div>  <!-- map element -->
+      </div>
+
+      <div class="col-5" style="margin-left:30px">  <!-- distribution chart and zoomed in map -->
+        <div id="stats" style="background-color:white; margin-top:30px; margin-bottom:20px; margin-left:2px"> </div>
+        <div id="chart1" style="background-color:white; margin-bottom:30px;"> </div>
+        <div id="map-zoomed" style="background-color:white; margin-left:20px">
+        </div>
+      </div> 
+
     </div>
 
-    <div  id="flexRowSliders" class="d-flex flex-row" style="margin-top:30px">
+    <div  id="flexRowSliders" class="d-flex flex-row" style="margin-left:35px">
       <div class="col-1"></div>  <!-- blank column for padding -->
 
       <div class="col-3">
