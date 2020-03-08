@@ -354,51 +354,71 @@ let zMouseClick = function(d) { // De/select school on mouse click
 }
 
 // OVERVIEW MAP ////////////////////////////////////////////////////////////////
-var projection = d3.geoAlbers() // centered on NYC and scaled
-    .center([0, nycLoc[0]])
-    .rotate([nycLoc[1], 0])
-    .translate([mapWidth/2, mapHeight/2])
-    .scale([mapScale]);
-var path = d3.geoPath().projection(projection);
+/* Map creation method:
+svg: SVG to create map on
+projection: see createProjection()
+heat: true for heat map, false for points
+hsl: array of format [hue, saturation, min_lightness, max_lightness]
+minColor/maxColor: if a heat map, provide colors else None
+data: if a heat map, map {sd#: aggregation_value}
+      if a point map, array of items with Latitude/Longitude fields
+name: class name given to all point elements if points used
+sd_events: mouse event on each school district */
+let createMap = function(svg, projection, heat, hsl, data,
+  sd_mouseOver, sd_mouseLeave, sd_mouseClick) {
 
-var map = d3.select('#map') // Create Map SVG element
-  .append('svg')
-    .attr('width', mapWidth)
-    .attr('height', mapHeight);
-map.append('rect') // Create border on Map
-    .attr('x', 0)
-    .attr('y', 0)
-    .attr('height', mapHeight)
-    .attr('width', mapWidth)
-    .attr('pointer-events', 'all')
-    .style('stroke', mapBorderColor)
-    .style('fill', 'none')
-    .style('stroke-width', mapBorderW)
-    .on('click', overviewMouseClick); // Allow background click to deselect
+  var path = d3.geoPath().projection(projection)
 
-map.selectAll('path') // Create map of NYC SDs
-  .data(geoData.features)
-  .enter()
-  .append('path')
-      .attr('d', path)
-      .attr('stroke', mapStrokeColor)
-      .attr('stroke-width', mapStrokeWidth)
-      .attr('fill', mapFillColor)
-      .attr('class', function(d) {
-        return 'District'
-      })
-      .attr('id', function(d) {
-        return 'sd' + d.properties.SchoolDist;
-      })
-      .style('opacity', mapOpacity)
-      .on('mouseover', overviewMouseOver)
-      .on('mouseleave', overviewMouseLeave)
-      .on('click', overviewMouseClick);
+  var minValue = 0.0
+  var maxValue = 0.0
+  var lightnessScale = null
+  if (heat) { // Heat map: get min/max agg values, create HSL scale
+    for (var sd = 1; sd <= 32; sd++) {
+      var value = data.get(sd)
+      minValue = value < minValue ? value : minValue;
+      maxValue = value > maxValue ? value : maxValue;
+    }
+    lightnessScale = d3.scaleLinear()
+        .domain([minValue, maxValue])
+        .range([hsl[2], hsl[3]]);
+  }
 
-d3.csv(scoresCsv).then(function(d) { // Add point to map for each school
-  scores = d; // Save scores to global variable
-  map.selectAll('circle')
-    .data(d)
+  svg.selectAll('path') // Create map of NYC SDs
+    .data(geoData.features)
+    .enter()
+    .append('path')
+        .attr('d', path)
+        .attr('stroke', mapStrokeColor)
+        .attr('stroke-width', mapStrokeWidth)
+        .attr('fill', function(d) {
+          if (heat) {
+            return d3.hcl(hsl[0], hsl[1], 
+              lightnessScale(data.get(d.properties.SchoolDist)))
+          } else {
+            return mapFillColor;
+          }
+        })
+        .attr('class', function(d) {
+          return 'District'
+        })
+        .attr('id', function(d) {
+          return 'sd' + d.properties.SchoolDist;
+        })
+        .style('opacity', mapOpacity)
+        .on('mouseover', sd_mouseOver)
+        .on('mouseleave', sd_mouseLeave)
+        .on('click', sd_mouseClick);
+}
+
+/* Helper method to plot points on a SVG map.
+svg: SVG to plot points on
+projection: see createProjection()
+data: array of objects, required fields: Latitude, Longitude
+name: 'class' name String to be assigned to each point */
+let plotPoints = function(svg, projection, data, name, radius, fill, 
+  stroke, strokeWidth, opacity) {
+    svg.selectAll('circle')
+    .data(data)
     .enter()
     .append('circle')
       .attr('cx', function(d) {
@@ -407,16 +427,140 @@ d3.csv(scoresCsv).then(function(d) { // Add point to map for each school
       .attr('cy', function(d) {
         return projection([d.Longitude, d.Latitude])[1];
       })
-      .attr('r', pointRadius)
+      .attr('r', radius)
       .attr('class', function(d) {
-        return 'School'
+        return name
       })
       .attr('pointer-events', 'none')
-      .style('fill', pointColor)
-      .style('stroke', pointStrokeColor)
-      .style('stroke-width', pointStrokeWidth)
-      .style('opacity', pointOpacity);
+      .style('fill', fill)
+      .style('stroke', stroke)
+      .style('stroke-width', strokeWidth)
+      .style('opacity', opacity);
+  }
+
+/* Helper method to create projection.
+width/height: width/height of SVG to draw map on
+scale: scale of map
+  NOTE: Unfortunately, you will need to experiment with the scale factor in
+        order to find a correct sizing for the map. Inputting desired
+        map width/height is not supported due to how I determined
+        lat/lng values of each SD.
+*/
+let createProjection = function(width, height, scale) {
+  var projection = d3.geoAlbers() // centered on NYC and scaled
+    .center([0, nycLoc[0]])
+    .rotate([nycLoc[1], 0])
+    .translate([width/2, height/2])
+    .scale([scale]);
+  return projection;
+}
+
+// Draw overview map OR HEAT MAP EXAMPLE
+d3.csv(scoresCsv).then(function(d) {  // Parse scores and create map
+  scores = d; // Save scores to global variable
+
+  var map = d3.select('#map') // Create Map SVG element
+    .append('svg')
+      .attr('width', mapWidth)
+      .attr('height', mapHeight);
+  map.append('rect') // Create border on Map
+      .attr('x', 0)
+      .attr('y', 0)
+      .attr('height', mapHeight)
+      .attr('width', mapWidth)
+      .attr('pointer-events', 'all')
+      .style('stroke', mapBorderColor)
+      .style('fill', 'none')
+      .style('stroke-width', mapBorderW)
+      .on('click', overviewMouseClick); // Allow background click to deselect
+
+  var projection = createProjection(mapWidth, mapHeight, mapScale)
+
+  // ENABLE TO SHOW HEAT MAP EXAMPLE, DISABLE FOR ORIGINAL POINT MAP
+  const HEAT_EXAMPLE = 1
+
+  if (HEAT_EXAMPLE) { // HEAT MAP EXAMPLE
+    var heatExampleData =new Map() // map {sd#: sd# * 10}
+    for (var i = 1; i <= 32; i++) {
+      heatExampleData.set(i, i*10)
+    }
+    // Heat map example: array of {sd: sd_id, value: sd_id * 10} passed in
+    createMap(map, projection, 1, [203,100,75,0], heatExampleData,
+      null, null, null);
+  } else { // ORIGINAL MAP PLOTTING SCHOOL POINTS
+    createMap(map, projection, 0, null, scores,
+      overviewMouseOver, overviewMouseLeave, overviewMouseClick);
+    plotPoints(map, projection, scores, 'school', pointRadius, pointColor, 
+      pointStrokeColor, pointStrokeWidth, pointOpacity);
+  }
 });
+
+// OLD CODE TO CREATE MAP ////////////////////////////////////////////////////////////////
+// var projection = d3.geoAlbers() // centered on NYC and scaled
+//     .center([0, nycLoc[0]])
+//     .rotate([nycLoc[1], 0])
+//     .translate([mapWidth/2, mapHeight/2])
+//     .scale([mapScale]);
+// var path = d3.geoPath().projection(projection);
+
+// var map = d3.select('#map') // Create Map SVG element
+//   .append('svg')
+//     .attr('width', mapWidth)
+//     .attr('height', mapHeight);
+// map.append('rect') // Create border on Map
+//     .attr('x', 0)
+//     .attr('y', 0)
+//     .attr('height', mapHeight)
+//     .attr('width', mapWidth)
+//     .attr('pointer-events', 'all')
+//     .style('stroke', mapBorderColor)
+//     .style('fill', 'none')
+//     .style('stroke-width', mapBorderW)
+//     .on('click', overviewMouseClick); // Allow background click to deselect
+
+// map.selectAll('path') // Create map of NYC SDs
+//   .data(geoData.features)
+//   .enter()
+//   .append('path')
+//       .attr('d', path)
+//       .attr('stroke', mapStrokeColor)
+//       .attr('stroke-width', mapStrokeWidth)
+//       .attr('fill', mapFillColor)
+//       .attr('class', function(d) {
+//         return 'District'
+//       })
+//       .attr('id', function(d) {
+//         return 'sd' + d.properties.SchoolDist;
+//       })
+//       .style('opacity', mapOpacity)
+//       .on('mouseover', overviewMouseOver)
+//       .on('mouseleave', overviewMouseLeave)
+//       .on('click', overviewMouseClick);
+
+// d3.csv(scoresCsv).then(function(d) { // Add point to map for each school
+//   console.log(d)
+//   scores = d; // Save scores to global variable
+//   map.selectAll('circle')
+//     .data(d)
+//     .enter()
+//     .append('circle')
+//       .attr('cx', function(d) {
+//         return projection([d.Longitude, d.Latitude])[0];
+//       })
+//       .attr('cy', function(d) {
+//         return projection([d.Longitude, d.Latitude])[1];
+//       })
+//       .attr('r', pointRadius)
+//       .attr('class', function(d) {
+//         return 'School'
+//       })
+//       .attr('pointer-events', 'none')
+//       .style('fill', pointColor)
+//       .style('stroke', pointStrokeColor)
+//       .style('stroke-width', pointStrokeWidth)
+//       .style('opacity', pointOpacity);
+// });
+////////////////////////////////////////////////////////////////////////////////
 
 // ZOOMED MAP //////////////////////////////////////////////////////////////////
 var zProjection = d3.geoAlbers()
