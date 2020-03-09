@@ -361,7 +361,6 @@ heat: true for heat map, false for points
 hsl: array of format [hue, saturation, min_lightness, max_lightness]
 minColor/maxColor: if a heat map, provide colors else None
 data: if a heat map, map {sd#: aggregation_value}
-      if a point map, array of items with Latitude/Longitude fields
 name: class name given to all point elements if points used
 sd_events: mouse event on each school district */
 let createMap = function(svg, projection, heat, hsl, data,
@@ -457,27 +456,40 @@ let createProjection = function(width, height, scale) {
 
 // Draw overview map OR HEAT MAP EXAMPLE
 d3.csv(scoresCsv).then(function(d) {  // Parse scores and create map
+  // DEMONSTRATION FLAGS ///////////////////////////////////////////////////////
+  const HEAT_EXAMPLE = 1
+  const BOTH_HEAT_AND_POINTS = 0 // HEAT_EXAMPLE must be enabled for this
+  const SMALLER_MAP = 0
+  // DEMONSTRATION FLAGS ///////////////////////////////////////////////////////
+
+  var TEST_WIDTH = mapWidth  // Default values
+  var TEST_HEIGHT = mapHeight
+  var TEST_SCALE = mapScale
+  if (SMALLER_MAP) {
+    TEST_WIDTH = mapWidth * 0.5
+    TEST_HEIGHT = mapHeight * 0.5
+    TEST_SCALE = mapScale * 0.5
+  }
+
+
   scores = d; // Save scores to global variable
 
   var map = d3.select('#map') // Create Map SVG element
     .append('svg')
-      .attr('width', mapWidth)
-      .attr('height', mapHeight);
+      .attr('width', TEST_WIDTH)
+      .attr('height', TEST_HEIGHT);
   map.append('rect') // Create border on Map
       .attr('x', 0)
       .attr('y', 0)
-      .attr('height', mapHeight)
-      .attr('width', mapWidth)
+      .attr('height', TEST_HEIGHT)
+      .attr('width', TEST_WIDTH)
       .attr('pointer-events', 'all')
       .style('stroke', mapBorderColor)
       .style('fill', 'none')
       .style('stroke-width', mapBorderW)
       .on('click', overviewMouseClick); // Allow background click to deselect
 
-  var projection = createProjection(mapWidth, mapHeight, mapScale)
-
-  // ENABLE TO SHOW HEAT MAP EXAMPLE, DISABLE FOR ORIGINAL POINT MAP
-  const HEAT_EXAMPLE = 1
+  var projection = createProjection(TEST_WIDTH, TEST_HEIGHT, TEST_SCALE)
 
   if (HEAT_EXAMPLE) { // HEAT MAP EXAMPLE
     var heatExampleData =new Map() // map {sd#: sd# * 10}
@@ -485,8 +497,13 @@ d3.csv(scoresCsv).then(function(d) {  // Parse scores and create map
       heatExampleData.set(i, i*10)
     }
     // Heat map example: array of {sd: sd_id, value: sd_id * 10} passed in
-    createMap(map, projection, 1, [203,100,75,0], heatExampleData,
+    createMap(map, projection, 1, [124,100,75,0], heatExampleData,
       null, null, null);
+    // Can also plot points on the heat map if desired
+    if (BOTH_HEAT_AND_POINTS) {
+      plotPoints(map, projection, scores, 'school', pointRadius, pointColor, 
+        pointStrokeColor, pointStrokeWidth, pointOpacity);
+    }
   } else { // ORIGINAL MAP PLOTTING SCHOOL POINTS
     createMap(map, projection, 0, null, scores,
       overviewMouseOver, overviewMouseLeave, overviewMouseClick);
