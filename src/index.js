@@ -258,6 +258,8 @@ let overviewMouseClick = function(d) { //De/select SD on mouse click
 }
 
 
+
+
 // SECTION FOR BOX PLOT ////////////////////////////
 
 var mapZWidthOriginal = 350 * 1.2;
