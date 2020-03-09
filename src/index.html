@@ -19,69 +19,85 @@
     <script src="https://unpkg.com/d3-simple-slider" c></script>
   </head>
 
-  <body>   
+  <body>
+    <div id="fullpage">
+      <div class="section active" data-anchor="slide1">
+        <div class="d-flex flex-row">
+          <div class="col-1"></div>
     
-    <div class="d-flex flex-row">
-      <div class="col-1"></div>
-
-      <div class="col-5">
-        <div style="width:420px; margin-left: 160px; margin-top: 20px">
-          <div id="centered" style="margin: 0 auto; width:420px;">
-            <p><b>Select a feature to underlay as a density map below.</b></p>
+          <div class="col-5">
+            <div style="width:420px; margin-left: 160px; margin-top: 20px">
+              <div id="centered" style="margin: 0 auto; width:420px;">
+                <p><b>Select a feature to underlay as a density map below.</b></p>
+              </div>
+            </div>
+        
+            <div class="btn-group btn-group-toggle" data-toggle="buttons" style="margin-left: 150px; margin-bottom: 25px;">
+              <label class="btn btn-secondary active" id="wifiButton">
+                <input type="radio" name="options" autocomplete="off" checked> Wi-Fi Hotspots
+              </label>
+              <label class="btn btn-secondary" id="noiseButton">
+                <input type="radio" name="options" autocomplete="off"> Noise Complaints
+              </label>
+              <label class="btn btn-secondary" id="incomeButton" >
+                <input type="radio" name="options" autocomplete="off"> Income
+              </label>
+              <label class="btn btn-secondary" id="arrestsButton">
+                <input type="radio" name="options" autocomplete="off"> Arrests
+              </label>
+            </div>
+        
+            <div style="width:600px; margin-left: 70px; margin-bottom: 20px;">
+              <div id="centered" style="margin: 0 auto; width:600px;">
+                <p>Click on a school district on the map below to display its overall SAT stats, or go ahead and select a specific school on the map to the right for school-specific SAT stats.</p>
+              </div>
+            </div>
+    
+            <div id="map" style="margin-left: 50px"></div>  <!-- map element -->
           </div>
+    
+          <div class="col-5" style="margin-left:30px">  <!-- distribution chart and zoomed in map -->
+            <div id="stats" style="background-color:white; margin-top:30px; margin-bottom:20px; margin-left:2px"> </div>
+            <div id="chart1" style="background-color:white; margin-bottom:30px;"> </div>
+            <div id="map-zoomed" style="background-color:white; margin-left:20px">
+            </div>
+          </div> 
+    
         </div>
     
-        <div class="btn-group btn-group-toggle" data-toggle="buttons" style="margin-left: 150px; margin-bottom: 25px;">
-          <label class="btn btn-secondary active" id="wifiButton">
-            <input type="radio" name="options" autocomplete="off" checked> Wi-Fi Hotspots
-          </label>
-          <label class="btn btn-secondary" id="noiseButton">
-            <input type="radio" name="options" autocomplete="off"> Noise Complaints
-          </label>
-          <label class="btn btn-secondary" id="incomeButton" >
-            <input type="radio" name="options" autocomplete="off"> Income
-          </label>
-          <label class="btn btn-secondary" id="arrestsButton">
-            <input type="radio" name="options" autocomplete="off"> Arrests
-          </label>
-        </div>
+        <div  id="flexRowSliders" class="d-flex flex-row" style="margin-left:35px">
+          <div class="col-1"></div>  <!-- blank column for padding -->
     
-        <div style="width:600px; margin-left: 70px; margin-bottom: 20px;">
-          <div id="centered" style="margin: 0 auto; width:600px;">
-            <p>Click on a school district on the map below to display its overall SAT stats, or go ahead and select a specific school on the map to the right for school-specific SAT stats.</p>
+          <div class="col-3">
+            <div id = 'math' class="d3-slider d3-slider-horizontal"></div>  <!-- slider element -->
+            <p id = 'mathText' class="text-center">Average Score (SAT Math)</p>
           </div>
-        </div>
-
-        <div id="map" style="margin-left: 50px"></div>  <!-- map element -->
+    
+          <div class="col-3">
+            <div id = 'reading' class="d3-slider d3-slider-horizontal"></div>  <!-- slider element -->
+            <p id = 'readingText' class="text-center">Average Score (SAT Reading)</p>
+          </div>
+    
+          <div class="col-3">
+            <div id = 'writing' class="d3-slider d3-slider-horizontal"></div>  <!-- slider element -->
+            <p id = 'writingText' class="text-center">Average Score (SAT Writing)</p>
+          </div>
+        </div>    
       </div>
-
-      <div class="col-5" style="margin-left:30px">  <!-- distribution chart and zoomed in map -->
-        <div id="stats" style="background-color:white; margin-top:30px; margin-bottom:20px; margin-left:2px"> </div>
-        <div id="chart1" style="background-color:white; margin-bottom:30px;"> </div>
-        <div id="map-zoomed" style="background-color:white; margin-left:20px">
-        </div>
-      </div> 
-
+      <div class="section" data-anchor="slide2"></div>
+      <div class="section" data-anchor="slide3"><h1>No wraps, no extra markup</h1></div>
+      <div class="section" data-anchor="slide4"><h1>Just the simplest demo ever</h1></div>
     </div>
 
-    <div  id="flexRowSliders" class="d-flex flex-row" style="margin-left:35px">
-      <div class="col-1"></div>  <!-- blank column for padding -->
+    <script src="./index.js"></script>
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script> 
+  </body>
 
-      <div class="col-3">
-        <div id = 'math' class="d3-slider d3-slider-horizontal"></div>  <!-- slider element -->
-        <p id = 'mathText' class="text-center">Average Score (SAT Math)</p>
-      </div>
-
-      <div class="col-3">
-        <div id = 'reading' class="d3-slider d3-slider-horizontal"></div>  <!-- slider element -->
-        <p id = 'readingText' class="text-center">Average Score (SAT Reading)</p>
-      </div>
-
-      <div class="col-3">
-        <div id = 'writing' class="d3-slider d3-slider-horizontal"></div>  <!-- slider element -->
-        <p id = 'writingText' class="text-center">Average Score (SAT Writing)</p>
-      </div>
-    </div>    
+  <body>   
+    
     
 
     <!-- <div id="fullpage">
@@ -96,12 +112,7 @@
    <script src="./test.js"></script> -->
     
 
-    <script src="./index.js"></script>
-    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
-        
+
   </body>
 
 

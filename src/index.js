@@ -1,6 +1,7 @@
 import * as d3 from 'd3';
 import * as d3ss from 'd3-simple-slider';
 import $ from "jquery";
+import fullpage from 'fullpage.js';
 import geoData from './school_districts.json';
 import scoresCsv from './scores.csv';
 import sdCentersCsv from './school_district_centers.csv';
@@ -10,6 +11,14 @@ const schoolName = 'School Name';
 const math = 'Average Score (SAT Math)';
 const reading = 'Average Score (SAT Reading)';
 const writing = 'Average Score (SAT Writing)';
+
+var fullPageInstance = new fullpage('#fullpage', {
+  sectionsColor:['white', 'red', 'blue', 'grey'],
+  anchors:['firstPage', 'secondPage', 'thirdPage', 'fourthPage'],
+  navigation: true,
+  scrollBar: true,
+  autoScrolling:true
+});
 
 // IMPORTED DATA STORAGE ///////////////////////////////////////////////////////
 var scores = [] // Array of school objects with columns from scores csv
