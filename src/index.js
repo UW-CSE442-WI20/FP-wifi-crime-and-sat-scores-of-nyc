@@ -13,11 +13,10 @@ const reading = 'Average Score (SAT Reading)';
 const writing = 'Average Score (SAT Writing)';
 
 var fullPageInstance = new fullpage('#fullpage', {
-  sectionsColor:['white', 'red', 'blue', 'grey'],
+  sectionsColor:['white', 'white', 'blue', 'grey'],
   anchors:['firstPage', 'secondPage', 'thirdPage', 'fourthPage'],
   navigation: true,
-  scrollBar: true,
-  autoScrolling:true
+  scrollBar: true
 });
 
 // IMPORTED DATA STORAGE ///////////////////////////////////////////////////////
