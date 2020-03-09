@@ -359,9 +359,7 @@ svg: SVG to create map on
 projection: see createProjection()
 heat: true for heat map, false for points
 hsl: array of format [hue, saturation, min_lightness, max_lightness]
-minColor/maxColor: if a heat map, provide colors else None
 data: if a heat map, map {sd#: aggregation_value}
-name: class name given to all point elements if points used
 sd_events: mouse event on each school district */
 let createMap = function(svg, projection, heat, hsl, data,
   sd_mouseOver, sd_mouseLeave, sd_mouseClick) {
