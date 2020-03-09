@@ -3,24 +3,31 @@ require("babel-polyfill");
 
 import partycsv from "./party_in_nyc.csv";
 
-const XSTART = 10;
+const XSTART = 0;
 const YSPACING_SCALE = 160;
 const YSPACING_OFFSET = 100;
 const RAW_CIRCLE_ADJUSTMENT = 4;
-const PROCESSED_CIRCLE_ADJUSTMENT = 1.2;
+const PROCESSED_CIRCLE_ADJUSTMENT = 1.75;
 const TEXT_RAW_CIRCLE_DIST = 230;
-const TEXT_PROCESSED_CIRCLE_DIST = 430;
+const RIGHT_CIRCLES_X = 150;
 
-const SVG_WIDTH = 600;
+const SVG_WIDTH = 350;
 const SVG_HEIGHT = 800;
 
-// Make an SVG Container
+const CIRCLE_FILL = "steelblue";
+
+// Make left side SVG Container
 var svg = d3.select("#viz")
                     .append("svg")
                     .attr("width", SVG_WIDTH)
                     .attr("height", SVG_HEIGHT)
-                    .append("g")
                     .attr("transform", "translate(0,0)"); // todo: try deleting this see if anything changes
+
+var svg2 = d3.select("#viz")
+                    .append("svg")
+                    .attr("width", SVG_WIDTH)
+                    .attr("height", SVG_HEIGHT)
+                    .attr("id", "right-circles");
 
 // this is to allow the map to update with correct counts
 function sleep(ms) {
@@ -61,13 +68,17 @@ async function calc() {
         .enter()
         .append("circle")
         .style("stroke", "gray")
-        .style("fill", "black")
+        .style("fill", CIRCLE_FILL)
         .attr("r", function(d){
             return Math.sqrt(d.value) / RAW_CIRCLE_ADJUSTMENT;
         })
         .attr("cx", XSTART + TEXT_RAW_CIRCLE_DIST)
         .attr("cy", function (d, i) {
             return i * YSPACING_SCALE + YSPACING_OFFSET;
+        })
+        .append("svg:title")
+        .text(function(d) {
+            return d.key + ": " + d.value + " noise complaints"
         });
 
     // square mileage
@@ -75,18 +86,22 @@ async function calc() {
 
     // add right circles, land area taken into consideration
     // divide each circle area by land area and resize
-    svg.selectAll(".borough")
+    svg2.selectAll(".borough")
         .data(d3.entries(mapping))
         .enter()
         .append("circle")
         .style("stroke", "gray")
-        .style("fill", "black")
+        .style("fill", CIRCLE_FILL)
         .attr("r", function(d){
             return Math.sqrt(d.value / areas[d.key]) * PROCESSED_CIRCLE_ADJUSTMENT;
         })
-        .attr("cx", XSTART + TEXT_PROCESSED_CIRCLE_DIST)
+        .attr("cx", RIGHT_CIRCLES_X)
         .attr("cy", function (d, i) {
             return i * YSPACING_SCALE + YSPACING_OFFSET;
+        })
+        .append("svg:title")
+        .text(function(d) {
+            return d.key + ": " + Math.round(d.value / areas[d.key]) + " noise complaints per square mile"
         });
 
 
@@ -101,6 +116,19 @@ async function calc() {
 }
 
 calc();
+
+$("#right-circles").hide();
+$(".right-circle-title").hide();
+$(".reveal-text").hide();
+
+$(".reveal-btn").click(function() {
+    
+    $("#right-circles").slideToggle(700);
+
+    $(".right-circle-title").slideToggle(700);
+
+    $(".reveal-text").slideToggle(700);
+});
 
 
 

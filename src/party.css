@@ -10,10 +10,36 @@
     padding-top: 20px;
     padding-right: 50px;
     padding-bottom: 20px;
+    height: 950px;
 
 }
 
 .party {
     height: 100%;
     width: 100%;
+}
+
+.reveal-btn {
+    margin-top: 20px;
+    margin-bottom: 40px;
+}
+
+.left-circle-title {
+    padding-left: 25px;
+    padding-top: 20px;
+    margin-left: 45px;
+}
+
+.right-circle-title {
+    padding-top: 20px;
+    margin-left: 10px;
+}
+
+.borough-title {
+    padding-top: 20px;
+    padding-left: 15px;
+}
+
+.story-to-tell {
+    padding-top: 20px;
 }

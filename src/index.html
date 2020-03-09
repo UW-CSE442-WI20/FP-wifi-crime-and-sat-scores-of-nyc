@@ -27,11 +27,46 @@
         <h3>Party Party</h3>
         <hr>
         <div class="row">
-          <div class="col-lg-8" id="viz">
-            <h4>Viz</h4>
+          <div class="col-lg-6" id="viz">
+            <div class="row">
+              <div class="col-sm-2 borough-title">
+                <h4>Borough</h4>
+              </div>
+              <div class="col-sm-4 left-circle-title">
+                <!-- <button class="reveal-btn">Tell me more...</button> -->
+                <h5>Total Noise Complaints</h5>
+              </div>
+              <div class="col-sm-4 right-circle-title">
+                <h5>Noise Complaint Density</h5>
+              </div>
+            </div>
           </div>
-          <div class="col-lg-4">
+          <div class="col-lg-4 story-to-tell">
             <h4>A story to tell</h4>
+            <br/>
+            <p>
+              Here we have a visualization of the total noise compaints in each New York City borough from
+              the year 2014-2015. Hover over each section of circle to view the number of noise
+              complaints from that borough. The more noise complaints, the bigger the circle. As we move on
+              in this journey, think about how the noise complaints may affect SAT scores of high schools in
+              each bourough. More noise complaints likely means more parties. More partying means less studying.
+              Less studying likely leads to lower SAT scores... right? Seems logical, but only the data will truly
+              tell. We'd also be fools to ignore the fact that each borough is a different size, so even though
+              there are a lot more noise complaints in an area, it could also be much bigger. What may be more relevant
+              and helpful to draw connections from is the noise complaint density in each borough...
+            </p>
+            <button class="reveal-btn">Tell me more...</button>
+            <p class="reveal-text">
+              We reveal the true, more relative circle sizes based off the <b>noise complaint density.</b>
+              It is interesting to note how the circle sizes change once square mileage is factored into the picture.
+              While Brooklyn has the most incidents of reported noise complaints, it turns out that Manhattan actually
+              has the highest number of complaints per square mile. It originally had nearly the same amount of complaints
+              as Brooklyn, but it's size is a fraction of that of Brooklyn. The opposite goes for Queens.
+              <br/><br/>
+              In the final section of this story, I encourage you to think make other connections in addition
+              to just the SAT scores. How might the level of noise complaints have a relationship with crime, income,
+              and even WiFi density? Move along and explore for yourself.
+            </p>
           </div>
 
         </div>
@@ -134,8 +169,17 @@
     </div>
    <script src="./test.js"></script> -->
     
+    <script src="./index.js"></script>
+    
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
 
 
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script src="./party.js"></script>
+        
   </body>
 
 
