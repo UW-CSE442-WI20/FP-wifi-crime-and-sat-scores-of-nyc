@@ -6,6 +6,7 @@ import geoData from './school_districts.json';
 import scoresCsv from './scores.csv';
 import sdCentersCsv from './school_district_centers.csv';
 import sdScoreAvgsCsv from './district_score_avgs.csv';
+import sdDataCsv from './districtData.csv'
 
 const schoolName = 'School Name';
 const math = 'Average Score (SAT Math)';
@@ -13,8 +14,8 @@ const reading = 'Average Score (SAT Reading)';
 const writing = 'Average Score (SAT Writing)';
 
 var fullPageInstance = new fullpage('#fullpage', {
-  sectionsColor:['white', 'white', 'blue', 'grey'],
-  anchors:['firstPage', 'secondPage', 'thirdPage', 'fourthPage'],
+  sectionsColor:['white', 'white', 'blue', 'grey', 'white', 'grey'],
+  anchors:['firstPage', 'secondPage', 'thirdPage', 'fourthPage', 'fifthPage', 'sixthPage'],
   navigation: true,
   scrollBar: true
 });
@@ -369,24 +370,25 @@ svg: SVG to create map on
 projection: see createProjection()
 heat: true for heat map, false for points
 hsl: array of format [hue, saturation, min_lightness, max_lightness]
+domain: [minValue, maxValue] for data
 data: if a heat map, map {sd#: aggregation_value}
 sd_events: mouse event on each school district */
-let createMap = function(svg, projection, heat, hsl, data,
+let createMap = function(svg, projection, heat, hsl, domain, data,
   sd_mouseOver, sd_mouseLeave, sd_mouseClick) {
 
   var path = d3.geoPath().projection(projection)
 
-  var minValue = 0.0
-  var maxValue = 0.0
+  var minValue = Infinity
+  var maxValue = -Infinity
   var lightnessScale = null
   if (heat) { // Heat map: get min/max agg values, create HSL scale
-    for (var sd = 1; sd <= 32; sd++) {
-      var value = data.get(sd)
-      minValue = value < minValue ? value : minValue;
-      maxValue = value > maxValue ? value : maxValue;
-    }
+    // for (var sd = 1; sd <= 32; sd++) {
+    //   var value = data.get(sd)
+    //   minValue = value < minValue ? value : minValue;
+    //   maxValue = value > maxValue ? value : maxValue;
+    // }
     lightnessScale = d3.scaleLinear()
-        .domain([minValue, maxValue])
+        .domain([domain[0], domain[1]])
         .range([hsl[2], hsl[3]]);
   }
 
@@ -505,7 +507,7 @@ d3.csv(scoresCsv).then(function(d) {  // Parse scores and create map
       heatExampleData.set(i, i*10)
     }
     // Heat map example: array of {sd: sd_id, value: sd_id * 10} passed in
-    createMap(map, projection, 1, [124,100,75,0], heatExampleData,
+    createMap(map, projection, 1, [124,100,75,0], [0, 320], heatExampleData,
       null, null, null);
     // Can also plot points on the heat map if desired
     if (BOTH_HEAT_AND_POINTS) {
@@ -513,7 +515,7 @@ d3.csv(scoresCsv).then(function(d) {  // Parse scores and create map
         pointStrokeColor, pointStrokeWidth, pointOpacity);
     }
   } else { // ORIGINAL MAP PLOTTING SCHOOL POINTS
-    createMap(map, projection, 0, null, scores,
+    createMap(map, projection, 0, null, null, scores,
       overviewMouseOver, overviewMouseLeave, overviewMouseClick);
     plotPoints(map, projection, scores, 'school', pointRadius, pointColor, 
       pointStrokeColor, pointStrokeWidth, pointOpacity);
@@ -871,4 +873,84 @@ $('#incomeButton').on('click', function(event) {
 
 $('#arrestsButton').on('click', function(event) {
   console.log("arrests clicked");
+});
+
+// SMALL MAPS /////////////////////////////////////////////////////////////////
+/*
+id: div id
+heat_data: heat data if heat map
+heat: 1 if heat map
+hsl: color scheme if heat map
+domain: [minValue, maxValue] for data
+point_data: point data if points
+points: 1 if points
+name: name to give to points
+*/
+let createSection = function(id, heat_data, heat, hsl, domain, point_data, points, name) {
+  var map = d3.select(id)
+  .append('svg')
+    .attr('width', SMALL_MAP_WIDTH)
+    .attr('height', SMALL_MAP_HEIGHT)
+  var projection = createProjection(SMALL_MAP_WIDTH, SMALL_MAP_HEIGHT, SMALL_MAP_SCALE)
+  createMap(map, projection, heat, hsl, domain, heat_data, null, null, null);
+  if (points) {
+    plotPoints(map, projection, point_data, name, pointRadius, pointColor,
+      pointStrokeColor, pointStrokeWidth, pointOpacity);
+  }
+}
+
+var SMALL_MAP_SCALE_FACTOR = 0.5
+var SMALL_MAP_WIDTH = mapWidth * SMALL_MAP_SCALE_FACTOR
+var SMALL_MAP_HEIGHT = mapHeight * SMALL_MAP_SCALE_FACTOR
+var SMALL_MAP_SCALE = mapScale * SMALL_MAP_SCALE_FACTOR
+var HSL = [197,100,100,0]
+
+d3.csv(sdDataCsv).then(function(data) {
+  var columns = ["Mean Income", "Mean Sat Score", 
+                 "Percentage Asian", "Percentage Black", "Percentage Hispanic", 
+                 "Percentage White", "Crimes", "Noise", "Wifi"]
+  var short_names = ['income', 'score', 'asian', 'black', 'hispanic',
+                     'white', 'crimes', 'noise', 'wifi'];
+  var alias = new Map(); // Map{feature_name: alias}
+  var maps = new Map(); // Map{feature: Map{sd#: value}}
+
+  for (var i = 0; i <= columns.length; i++) {
+    alias.set(short_names[i], columns[i])
+    maps.set(columns[i], new Map())
+  }
+
+  data.forEach(function(row) { // Create map for each feature
+    var sd = +row.District;
+    for (var i = 0; i <= columns.length; i++) {
+      var column = columns[i];
+      if (!isNaN(sd)) {
+        maps.get(column).set(sd, +row[column]);
+      }
+      // maps.get(column).set(sd, row[column]);
+    }
+  });
+
+
+  d3.csv(scoresCsv).then(function(d) {
+    createSection('#map-sat', maps.get(alias.get('score')), 1, HSL, 
+      [1000, 1600], d, 1, 'school');
+  });
+
+  createSection('#map-eth-white', maps.get(alias.get('white')), 1, HSL,
+    [0, 100], null, 0, null);
+  createSection('#map-eth-black', maps.get(alias.get('black')), 1, HSL,
+    [0, 100], null, 0, null);
+  createSection('#map-eth-hispanic', maps.get(alias.get('hispanic')), 1, HSL,
+    [0, 100], null, 0, null);
+  createSection('#map-eth-asian', maps.get(alias.get('asian')), 1, HSL,
+    [0, 100], null, 0, null);
+
+  createSection('#map-wifi', maps.get(alias.get('wifi')), 1, HSL,
+    [0, 100], null, 0, null);
+  createSection('#map-noise', maps.get(alias.get('noise')), 1, HSL,
+    [0, 5000], null, 0, null);
+  createSection('#map-crime', maps.get(alias.get('crimes')), 1, HSL,
+    [0, 3000], null, 0, null);
+  createSection('#map-income', maps.get(alias.get('income')), 1, HSL,
+    [0, 150000], null, 0, null);
 });
