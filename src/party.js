@@ -35,6 +35,7 @@ var svg2 = d3.select("#viz")
                     .attr("id", "right-circles");
                     
 var mapping = {"BROOKLYN": 0, "MANHATTAN": 0, "BRONX": 0, "QUEENS": 0, "STATEN ISLAND": 0};
+var areas = {"BROOKLYN": 69.5, "MANHATTAN": 22.8, "BRONX": 42.5, "QUEENS": 108.1, "STATEN ISLAND": 58.69};  
 var colors = ["firebrick", "orange", "gold", "green", "steelblue"];
 
 d3.csv(partycsv).then(function(data){
@@ -90,9 +91,6 @@ d3.csv(partycsv).then(function(data){
     .text(function(d){
         return Math.round(d.value / 1000) + "k";
     });
-
-    // square mileage
-    var areas = {"BROOKLYN": 69.5, "MANHATTAN": 22.8, "BRONX": 42.5, "QUEENS": 108.1, "STATEN ISLAND": 58.69};  
 
     // add right circles, land area taken into consideration
     // divide each circle area by land area and resize
