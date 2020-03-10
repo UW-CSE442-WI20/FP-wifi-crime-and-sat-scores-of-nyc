@@ -1,11 +1,11 @@
-.party-section {
+.weefee-section {
 
     border-style: solid;
     border-color: black;
     border-width: 3px;
     margin-left: 50px;
     margin-right: 50px;
-    margin-top: 10px;
+    margin-top: 20px;
     padding-left: 50px;
     padding-top: 20px;
     padding-right: 50px;
@@ -14,12 +14,12 @@
 
 }
 
-.party {
+.weefee {
     height: 100%;
     width: 100%;
 }
 
-.reveal-btn2 {
+.reveal-btn {
     margin-top: 20px;
     margin-bottom: 40px;
 }
@@ -30,7 +30,7 @@
     margin-left: 45px;
 }
 
-.right-circle-title2 {
+.right-circle-title {
     padding-top: 20px;
     margin-left: 10px;
 }
