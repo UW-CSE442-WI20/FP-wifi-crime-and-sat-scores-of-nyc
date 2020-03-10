@@ -467,7 +467,7 @@ let createProjection = function(width, height, scale) {
 // Draw overview map OR HEAT MAP EXAMPLE
 d3.csv(scoresCsv).then(function(d) {  // Parse scores and create map
   // DEMONSTRATION FLAGS ///////////////////////////////////////////////////////
-  const HEAT_EXAMPLE = 1
+  const HEAT_EXAMPLE = 0
   const BOTH_HEAT_AND_POINTS = 0 // HEAT_EXAMPLE must be enabled for this
   const SMALLER_MAP = 0
   // DEMONSTRATION FLAGS ///////////////////////////////////////////////////////
