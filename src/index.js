@@ -15,7 +15,7 @@ const reading = 'Average Score (SAT Reading)';
 const writing = 'Average Score (SAT Writing)';
 
 var fullPageInstance = new fullpage('#fullpage', {
-  sectionsColor:['white', 'white', 'blue', 'grey', 'white', 'grey'],
+  sectionsColor:['white', 'white', 'white', 'white', 'white', 'white'],
   anchors:['firstPage', 'secondPage', 'thirdPage', 'fourthPage', 'fifthPage', 'sixthPage'],
   navigation: true,
   scrollBar: true
@@ -199,7 +199,7 @@ var schemeBlack = d3.interpolateBlues;
 var domainBlack = [100, 0];
 var scaleBlack = createScale(domainBlack)
 
-var schemeHispanic = d3.interpolateGreen;
+var schemeHispanic = d3.interpolateGreens;
 var domainHispanic = [100, 0];
 var scaleHispanic = createScale(domainHispanic)
 
@@ -941,6 +941,22 @@ $('#arrestsButton').on('click', function(event) {
   console.log("crimes clicked");
   changeMap('crimes');
 });
+$('#whiteButton').on('click', function(event) {
+  console.log("white eth clicked");
+  changeMap('white');
+});
+$('#blackButton').on('click', function(event) {
+  console.log("black eth clicked");
+  changeMap('black');
+});
+$('#asianButton').on('click', function(event) {
+  console.log("asian eth clicked");
+  changeMap('asian');
+});
+$('#hispanicButton').on('click', function(event) {
+  console.log("hispanic eth clicked");
+  changeMap('hispanic');
+});
 
 // SMALL MAPS /////////////////////////////////////////////////////////////////
 /*
@@ -1015,17 +1031,25 @@ d3.csv(sdDataCsv).then(function(data) {
   currScale = scaleSat;
   currLegend = legendSat
 
-  // var mapEthWhite = generateLargeMap('map-ethWhite', schemeWhite, scaleWhite, largeMapPro, maps.get(alias.get('white')));
-  // generateLegend('#legend-ethWhite', 'gradient-ethWhite', scaleW, scaleH, schemeWhite, domainWhite, defaultTicks);
+  var mapEthWhite = generateLargeMap('map-ethWhite', schemeWhite, scaleWhite, largeMapPro, maps.get(alias.get('white')));
+  var legendWhite = generateLegend('#legend-ethWhite', 'gradient-ethWhite', scaleW, scaleH, schemeWhite, domainWhite, defaultTicks);
+  largeMaps.set('white', mapEthWhite);
+  legends.set('white', legendWhite)
 
-  // var mapEthBlack = generateLargeMap('map-ethBlack', schemeBlack, scaleBlack, largeMapPro, maps.get(alias.get('black')));
-  // generateLegend('#legend-ethBlack', 'gradient-ethBlack', scaleW, scaleH, schemeBlack, domainBlack, defaultTicks);
+  var mapEthBlack = generateLargeMap('map-ethBlack', schemeBlack, scaleBlack, largeMapPro, maps.get(alias.get('black')));
+  var legendBlack = generateLegend('#legend-ethBlack', 'gradient-ethBlack', scaleW, scaleH, schemeBlack, domainBlack, defaultTicks);
+  largeMaps.set('black', mapEthBlack);
+  legends.set('black', legendBlack)
 
-  // var mapEthAsian = generateLargeMap('map-ethAsian', schemeAsian, scaleAsian, largeMapPro, maps.get(alias.get('asian')));
-  // generateLegend('#legend-ethAsian', 'gradient-ethAsian', scaleW, scaleH, schemeAsian, domainAsian, defaultTicks);
+  var mapEthAsian = generateLargeMap('map-ethAsian', schemeAsian, scaleAsian, largeMapPro, maps.get(alias.get('asian')));
+  var legendAsian = generateLegend('#legend-ethAsian', 'gradient-ethAsian', scaleW, scaleH, schemeAsian, domainAsian, defaultTicks);
+  largeMaps.set('asian', mapEthAsian);
+  legends.set('asian', legendAsian)
 
-  // var mapEthHispanic = generateLargeMap('map-ethHispanic', schemeHispanic, scaleHispanic, largeMapPro, maps.get(alias.get('hispanic')));
-  // generateLegend('#legend-ethHispanic', 'gradient-ethHispanic', scaleW, scaleH, schemeHispanic, domainHispanic, defaultTicks);
+  var mapEthHispanic = generateLargeMap('map-ethHispanic', schemeHispanic, scaleHispanic, largeMapPro, maps.get(alias.get('hispanic')));
+  var legendHispanic = generateLegend('#legend-ethHispanic', 'gradient-ethHispanic', scaleW, scaleH, schemeHispanic, domainHispanic, defaultTicks);
+  largeMaps.set('hispanic', mapEthHispanic);
+  legends.set('hispanic', legendHispanic)
 
   var mapCrime = generateLargeMap('map-crime', schemeCrime, scaleCrime, largeMapPro, maps.get(alias.get('crimes')));
   var legendCrime = generateLegend('#legend-crime', 'gradient-crime', scaleW, scaleH, schemeCrime, domainCrime, defaultTicks);
