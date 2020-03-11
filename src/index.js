@@ -7,6 +7,7 @@ import scoresCsv from './scores.csv';
 import sdCentersCsv from './school_district_centers.csv';
 import sdScoreAvgsCsv from './district_score_avgs.csv';
 import sdDataCsv from './districtData.csv'
+import noiseCsv from './party_in_nyc.csv'
 
 const schoolName = 'School Name';
 const math = 'Average Score (SAT Math)';
@@ -19,6 +20,211 @@ var fullPageInstance = new fullpage('#fullpage', {
   navigation: true,
   scrollBar: true
 });
+
+
+// HELPER METHODS //////////////////////////////////////////////////////////////
+/* Generates a scale for given domain with range [0, 1].
+domain: [minValue, maxValue]
+*/
+let createScale = function(domain) {
+  return d3.scaleLinear().domain([domain[1], domain[0]]).range([0, 1]);
+}
+
+/* Creates a color legend.
+div: div id string
+id: unique id to give legend
+gradientName: gradient id string
+scheme: scheme that takes in value within domain [0, 1] and outputs a color
+domain: [minValue, maxValue]
+*/
+let generateLegend = function(div, gradientName, w, h, scheme, domain, ticks) {
+  var key = d3.select(div)
+    .append("svg")
+    .style("opacity", 0)
+    .attr("width", w)
+    .attr("height", h);
+  var legend = key.append("defs")
+    .append("svg:linearGradient")
+    .attr("id", gradientName)
+    .attr("x1", "0%")
+    .attr("y1", "100%")
+    .attr("x2", "100%")
+    .attr("y2", "100%")
+    .attr("spreadMethod", "pad");
+  legend.append("stop")
+    .attr("offset", "0%")
+    .attr("stop-color", scheme(0))
+    .attr("stop-opacity", 1);
+  legend.append("stop")
+    .attr("offset", "33%")
+    .attr("stop-color", scheme(.33))
+    .attr("stop-opacity", 1);
+  legend.append("stop")
+    .attr("offset", "66%")
+    .attr("stop-color", scheme(.66))
+    .attr("stop-opacity", 1);
+  legend.append("stop")
+    .attr("offset", "100%")
+    .attr("stop-color", scheme(1))
+    .attr("stop-opacity", 1);
+  key.append("rect")
+    .attr("width", w)
+    .attr("height", h - 30)
+    .style("fill", "url(#" + gradientName + ")")
+    .attr("transform", "translate(0,10)");
+  var y = d3.scaleLinear()
+    .range([w, 0])
+    .domain(domain);
+  var yAxis = d3.axisBottom()
+    .scale(y)
+    .ticks(ticks);
+  key.append("g")
+    .attr("class", "y axis")
+    .attr("transform", "translate(0,30)")
+    .call(yAxis)
+    .append("text")
+    .attr("transform", "rotate(-90)")
+    .attr("y", 0)
+    .attr("dy", ".71em")
+    .style("text-anchor", "end")
+    .text("axis title");
+  return key;
+}
+
+/* Generates a projection.
+width/height: width/height of SVG to draw map on
+scale: scale of map
+  NOTE: Unfortunately, you will need to experiment with the scale factor in
+        order to find a correct sizing for the map. Inputting desired
+        map width/height is not supported due to how I determined
+        lat/lng values of each SD.
+*/
+let createProjection = function(width, height, scale) {
+  var projection = d3.geoAlbers() // centered on NYC and scaled
+    .center([0, nycLoc[0]])
+    .rotate([nycLoc[1], 0])
+    .translate([width/2, height/2])
+    .scale([scale]);
+  return projection;
+}
+
+/* Generates the large map at end of webpage.
+id: string id to give to map
+scheme: scheme that takes in value within domain [0, 1] and outputs a color
+scale: D3.scale generated with min, max values as domain and [0, 1] as range
+projection: see createProjection()
+data: map {sd#: aggregation_value}
+*/
+let generateLargeMap = function(id, scheme, scale, projection, data) {
+  var path = d3.geoPath().projection(projection);
+  var map = d3.select('#map') // Create Map SVG element
+    .append('svg')
+      .attr('id', id)
+      .style('opacity', 0)
+      .attr('width', mapWidth)
+      .attr('height', mapHeight);
+  map.append('rect') // Create border on Map
+      .attr('x', 0)
+      .attr('y', 0)
+      .attr('height', mapHeight)
+      .attr('width', mapWidth)
+      .attr('pointer-events', 'all')
+      .style('stroke', mapBorderColor)
+      .style('fill', 'none')
+      .style('stroke-width', mapBorderW)
+      .on('click', overviewMouseClick); // Allow background click to deselect
+  map.selectAll('path') // Create map of NYC SDs
+    .data(geoData.features)
+    .enter()
+    .append('path')
+        .attr('d', path)
+        .attr('stroke', mapStrokeColor)
+        .attr('stroke-width', mapStrokeWidth)
+        .attr('fill', function(d) {
+          var sd = d.properties.SchoolDist
+          var value = data.get(sd);
+          return scheme(scale(value));
+        })
+        .attr('class', function(d) {
+          return 'District'
+        })
+        .attr('id', function(d) {
+          return 'sd' + d.properties.SchoolDist;
+        })
+        .style('opacity', mapOpacity)
+        .on('mouseover', overviewMouseOver)
+        .on('mouseleave', overviewMouseLeave)
+        .on('click', overviewMouseClick);
+  return map;
+}
+
+/* Plots points on an SVG map.
+svg: SVG to plot points on
+projection: see createProjection()
+data: array of objects, required fields: Latitude, Longitude
+name: 'class' name String to be assigned to each point */
+let plotPoints = function(svg, projection, data, name, radius, fill, 
+  stroke, strokeWidth, opacity) {
+    svg.selectAll('circle')
+    .data(data)
+    .enter()
+    .append('circle')
+      .attr('cx', function(d) {
+        return projection([d.Longitude, d.Latitude])[0];
+      })
+      .attr('cy', function(d) {
+        return projection([d.Longitude, d.Latitude])[1];
+      })
+      .attr('r', radius)
+      .attr('class', function(d) {
+        return name
+      })
+      .attr('pointer-events', 'none')
+      .style('fill', fill)
+      .style('stroke', stroke)
+      .style('stroke-width', strokeWidth)
+      .style('opacity', opacity);
+  }
+
+// COLOR SCHEMES & SCALES // see: https://github.com/d3/d3-scale-chromatic /////
+var schemeSat = d3.interpolateGnBu;
+var domainSat = [1600, 1000];
+var scaleSat = createScale(domainSat);
+
+var schemeWhite = d3.interpolatePurples;
+var domainWhite = [100, 0];
+var scaleWhite = createScale(domainWhite)
+
+var schemeBlack = d3.interpolateBlues;
+var domainBlack = [100, 0];
+var scaleBlack = createScale(domainBlack)
+
+var schemeHispanic = d3.interpolateGreen;
+var domainHispanic = [100, 0];
+var scaleHispanic = createScale(domainHispanic)
+
+var schemeAsian = d3.interpolateOranges;
+var domainAsian = [100, 0];
+var scaleAsian = createScale(domainAsian)
+
+var schemeCrime = d3.interpolateYlOrRd;
+var domainCrime = [3000, 0];
+var scaleCrime = createScale(domainCrime)
+
+var schemeIncome = d3.interpolatePuBu;
+var domainIncome = [150000, 0];
+var scaleIncome = createScale(domainIncome)
+
+var scaleW = 400;
+var scaleH = 50;
+var defaultTicks = 10;
+
+var currMap = null;
+var currScheme = null;
+var currScale = null;
+var currLegend = null;
+var largeMaps = new Map();
+var legends = new Map();
 
 // IMPORTED DATA STORAGE ///////////////////////////////////////////////////////
 var scores = [] // Array of school objects with columns from scores csv
@@ -36,7 +242,8 @@ var mapBorderColor = 'black';
 var mapStrokeColor = 'black';
 var mapStrokeWidth = 0.5;
 var mapFillColor = 'steelblue';
-var mapOpacity = 0.9;
+var mapOpacity = 0.8;
+
 var pointRadius = 2.5;
 var pointColor = '#ff6600';
 var pointStrokeColor = 'black'
@@ -78,7 +285,6 @@ var sliderWidth = 500;
 var sliderHeight = 75;
 
 // START FUNCTIONS /////////////////////////////////////////////////////////////
-
 // Remap SD geo data to correct keys
 for (var idx in geoData.features) {
   var sd = geoData.features[idx].properties.SchoolDist;
@@ -88,7 +294,6 @@ for (var idx in geoData.features) {
     districtGeos.set(sd, geoData.features[idx]);
   }
 }
-
 // Load in average scores for each SD
 d3.csv(sdScoreAvgsCsv).then(function(d) {
     avgScores = d;
@@ -99,16 +304,15 @@ let overviewMouseOver = function(d) { // Highlight SD on mouseover
   d3.select(this) // Highlight overview target SD
       .transition()
       .duration(mouseTransDuration)
-      .style('fill', mapHoverColor)
-      .style('opacity', mapOpacity);
+      .attr('stroke-width', selectedStrokeWidth * 0.75)
 };
 
 let overviewMouseLeave = function(d) { // Unhighlight SD on mouse leave
   if (selected != this) { // Do not de-highlight selected SD
     d3.select(this) // De-highlight overview target SD
         .transition()
-        .style('fill', mapFillColor)
-        .duration(mouseTransDuration);
+        .duration(mouseTransDuration)
+        .attr('stroke-width', mapStrokeWidth)
   }
 };
 
@@ -118,7 +322,6 @@ let overviewMouseClick = function(d) { //De/select SD on mouse click
     statBox.selectAll('text').remove();
     d3.select(selected)
         .transition()
-        .style('fill', mapFillColor)
         .attr('stroke-width', mapStrokeWidth)
         .duration(mouseTransDuration);
     mapZ.selectAll('path').remove();
@@ -132,31 +335,25 @@ let overviewMouseClick = function(d) { //De/select SD on mouse click
     zSelected = null;
     d3.select(this)
         .transition()
-        .style('fill', selectedFillColor)
+        .style('opacity', 1)
         .attr('stroke-width', selectedStrokeWidth)
         .duration(mouseTransDuration);
     selected = this;
-    updateZMap(+this.id.substring(2)); // Update zoomed map
+    updateZMap(+this.id.substring(2), scaleSat); // Update zoomed map
     updateDistrictStats(+this.id.substring(2)); // Update text box
   }
 
   districtName = this.id.substring(2);
-  console.log("This is name");
-  console.log(districtName);
 
-
-  // This is for Box Plot
+  // BOX PLOT //////////////////////////////////////////////////////////////////
   var sat_all = [];
   d3.csv(scoresCsv).then(function(data){
     data.forEach(function(d){
       if (d.District === districtName)
-      {
-        
+      {        
           sat_all.push(parseFloat(d["Average Score (SAT Math)"]) + parseFloat(d["Average Score (SAT Reading)"]) + parseFloat(d["Average Score (SAT Writing)"]));
-        
       }
       //console.log(d3.geoContains(cool, [parseFloat(d.Longitude), parseFloat(d.Latitude)]));
-      
     });
 
     if (sat_all.length === 0) // This is for if the empty area is selected.
@@ -180,13 +377,10 @@ let overviewMouseClick = function(d) { //De/select SD on mouse click
 
     // Add the y axis
     //svg.call(d3.axisTop(x));
-
-
     var center = 40;
     var height = 40;
     var offset = 40;
     // Add the main line
-
     svg
     .select("#h")
       .transition()
@@ -196,7 +390,6 @@ let overviewMouseClick = function(d) { //De/select SD on mouse click
       .attr("x2", x(max_all) + offset)
       .attr("stroke", "black")
     // Show the box
-
     svg
     .select("#changed")
       .transition()
@@ -206,7 +399,6 @@ let overviewMouseClick = function(d) { //De/select SD on mouse click
       .attr("width", (x(q3_all)-x(q1_all)) )
       .attr("stroke", "black")
       .style("fill", "#69b3a2")
-
     // show median, min and max horizontal lines
     // svg
     // .selectAll("toto")
@@ -218,7 +410,6 @@ let overviewMouseClick = function(d) { //De/select SD on mouse click
     //   .attr("x1", function(d){ return(x(d) + offset)} )
     //   .attr("x2", function(d){ return(x(d) + offset)} )
     //   .attr("stroke", "black");
-
     svg
     .select("#i")
       .transition()
@@ -227,7 +418,6 @@ let overviewMouseClick = function(d) { //De/select SD on mouse click
       .attr("x1", x(min_all) + offset)
       .attr("x2", x(min_all) + offset)
       .attr("stroke", "black")
-
     svg
     .select("#j")
       .transition()
@@ -236,7 +426,6 @@ let overviewMouseClick = function(d) { //De/select SD on mouse click
       .attr("x1", x(median_all) + offset)
       .attr("x2", x(median_all) + offset)
       .attr("stroke", "black")
-
     svg
     .select("#k")
       .transition()
@@ -247,22 +436,14 @@ let overviewMouseClick = function(d) { //De/select SD on mouse click
       .attr("stroke", "black")
 
   });
-
   // svg.select("#changed").remove();
   // svg.select("#h").remove();
   // svg.select("#i").remove();
   // svg.select("#j").remove();
   // svg.select("#k").remove();
-
-
-
 }
 
-
-
-
-// SECTION FOR BOX PLOT ////////////////////////////
-
+// SECTION FOR BOX PLOT ////////////////////////////////////////////////////////
 var mapZWidthOriginal = 350 * 1.2;
 
 var svg = d3.select("#chart1")
@@ -312,8 +493,6 @@ svg
 svg
 .append("line")
   .attr("id", "k")
-
-
 
 // ZOOMED MAP MOUSE EVENTS /////////////////////////////////////////////////////
 let zMouseOver = function(d) { // Highlight school on mouseover
@@ -419,55 +598,10 @@ let createMap = function(svg, projection, heat, hsl, domain, data,
         .on('click', sd_mouseClick);
 }
 
-/* Helper method to plot points on a SVG map.
-svg: SVG to plot points on
-projection: see createProjection()
-data: array of objects, required fields: Latitude, Longitude
-name: 'class' name String to be assigned to each point */
-let plotPoints = function(svg, projection, data, name, radius, fill, 
-  stroke, strokeWidth, opacity) {
-    svg.selectAll('circle')
-    .data(data)
-    .enter()
-    .append('circle')
-      .attr('cx', function(d) {
-        return projection([d.Longitude, d.Latitude])[0];
-      })
-      .attr('cy', function(d) {
-        return projection([d.Longitude, d.Latitude])[1];
-      })
-      .attr('r', radius)
-      .attr('class', function(d) {
-        return name
-      })
-      .attr('pointer-events', 'none')
-      .style('fill', fill)
-      .style('stroke', stroke)
-      .style('stroke-width', strokeWidth)
-      .style('opacity', opacity);
-  }
-
-/* Helper method to create projection.
-width/height: width/height of SVG to draw map on
-scale: scale of map
-  NOTE: Unfortunately, you will need to experiment with the scale factor in
-        order to find a correct sizing for the map. Inputting desired
-        map width/height is not supported due to how I determined
-        lat/lng values of each SD.
-*/
-let createProjection = function(width, height, scale) {
-  var projection = d3.geoAlbers() // centered on NYC and scaled
-    .center([0, nycLoc[0]])
-    .rotate([nycLoc[1], 0])
-    .translate([width/2, height/2])
-    .scale([scale]);
-  return projection;
-}
-
 // Draw overview map OR HEAT MAP EXAMPLE
 d3.csv(scoresCsv).then(function(d) {  // Parse scores and create map
   // DEMONSTRATION FLAGS ///////////////////////////////////////////////////////
-  const HEAT_EXAMPLE = 0
+  const HEAT_EXAMPLE = 1
   const BOTH_HEAT_AND_POINTS = 0 // HEAT_EXAMPLE must be enabled for this
   const SMALLER_MAP = 0
   // DEMONSTRATION FLAGS ///////////////////////////////////////////////////////
@@ -484,110 +618,27 @@ d3.csv(scoresCsv).then(function(d) {  // Parse scores and create map
 
   scores = d; // Save scores to global variable
 
-  var map = d3.select('#map') // Create Map SVG element
-    .append('svg')
-      .attr('width', TEST_WIDTH)
-      .attr('height', TEST_HEIGHT);
-  map.append('rect') // Create border on Map
-      .attr('x', 0)
-      .attr('y', 0)
-      .attr('height', TEST_HEIGHT)
-      .attr('width', TEST_WIDTH)
-      .attr('pointer-events', 'all')
-      .style('stroke', mapBorderColor)
-      .style('fill', 'none')
-      .style('stroke-width', mapBorderW)
-      .on('click', overviewMouseClick); // Allow background click to deselect
+/////////////////////////////////////
 
-  var projection = createProjection(TEST_WIDTH, TEST_HEIGHT, TEST_SCALE)
-
-  if (HEAT_EXAMPLE) { // HEAT MAP EXAMPLE
-    var heatExampleData =new Map() // map {sd#: sd# * 10}
-    for (var i = 1; i <= 32; i++) {
-      heatExampleData.set(i, i*10)
-    }
-    // Heat map example: array of {sd: sd_id, value: sd_id * 10} passed in
-    createMap(map, projection, 1, [124,100,75,0], [0, 320], heatExampleData,
-      null, null, null);
-    // Can also plot points on the heat map if desired
-    if (BOTH_HEAT_AND_POINTS) {
-      plotPoints(map, projection, scores, 'school', pointRadius, pointColor, 
-        pointStrokeColor, pointStrokeWidth, pointOpacity);
-    }
-  } else { // ORIGINAL MAP PLOTTING SCHOOL POINTS
-    createMap(map, projection, 0, null, null, scores,
-      overviewMouseOver, overviewMouseLeave, overviewMouseClick);
-    plotPoints(map, projection, scores, 'school', pointRadius, pointColor, 
-      pointStrokeColor, pointStrokeWidth, pointOpacity);
-  }
+//   if (HEAT_EXAMPLE) { // HEAT MAP EXAMPLE
+//     var heatExampleData =new Map() // map {sd#: sd# * 10}
+//     for (var i = 1; i <= 32; i++) {
+//     }
+//     // Heat map example: array of {sd: sd_id, value: sd_id * 10} passed in
+//     createMap(map, projection, 1, [124,100,75,0], [0, 320], heatExampleData,
+//       null, null, null);
+//     // Can also plot points on the heat map if desired
+//     if (BOTH_HEAT_AND_POINTS) {
+//       plotPoints(map, projection, scores, 'school', pointRadius, pointColor, 
+//         pointStrokeColor, pointStrokeWidth, pointOpacity);
+//     }
+//   } else { // ORIGINAL MAP PLOTTING SCHOOL POINTS
+//     createMap(map, projection, 0, null, null, scores,
+//       overviewMouseOver, overviewMouseLeave, overviewMouseClick);
+//     plotPoints(map, projection, scores, 'school', pointRadius, pointColor, 
+//       pointStrokeColor, pointStrokeWidth, pointOpacity);
+//   }
 });
-
-// OLD CODE TO CREATE MAP ////////////////////////////////////////////////////////////////
-// var projection = d3.geoAlbers() // centered on NYC and scaled
-//     .center([0, nycLoc[0]])
-//     .rotate([nycLoc[1], 0])
-//     .translate([mapWidth/2, mapHeight/2])
-//     .scale([mapScale]);
-// var path = d3.geoPath().projection(projection);
-
-// var map = d3.select('#map') // Create Map SVG element
-//   .append('svg')
-//     .attr('width', mapWidth)
-//     .attr('height', mapHeight);
-// map.append('rect') // Create border on Map
-//     .attr('x', 0)
-//     .attr('y', 0)
-//     .attr('height', mapHeight)
-//     .attr('width', mapWidth)
-//     .attr('pointer-events', 'all')
-//     .style('stroke', mapBorderColor)
-//     .style('fill', 'none')
-//     .style('stroke-width', mapBorderW)
-//     .on('click', overviewMouseClick); // Allow background click to deselect
-
-// map.selectAll('path') // Create map of NYC SDs
-//   .data(geoData.features)
-//   .enter()
-//   .append('path')
-//       .attr('d', path)
-//       .attr('stroke', mapStrokeColor)
-//       .attr('stroke-width', mapStrokeWidth)
-//       .attr('fill', mapFillColor)
-//       .attr('class', function(d) {
-//         return 'District'
-//       })
-//       .attr('id', function(d) {
-//         return 'sd' + d.properties.SchoolDist;
-//       })
-//       .style('opacity', mapOpacity)
-//       .on('mouseover', overviewMouseOver)
-//       .on('mouseleave', overviewMouseLeave)
-//       .on('click', overviewMouseClick);
-
-// d3.csv(scoresCsv).then(function(d) { // Add point to map for each school
-//   console.log(d)
-//   scores = d; // Save scores to global variable
-//   map.selectAll('circle')
-//     .data(d)
-//     .enter()
-//     .append('circle')
-//       .attr('cx', function(d) {
-//         return projection([d.Longitude, d.Latitude])[0];
-//       })
-//       .attr('cy', function(d) {
-//         return projection([d.Longitude, d.Latitude])[1];
-//       })
-//       .attr('r', pointRadius)
-//       .attr('class', function(d) {
-//         return 'School'
-//       })
-//       .attr('pointer-events', 'none')
-//       .style('fill', pointColor)
-//       .style('stroke', pointStrokeColor)
-//       .style('stroke-width', pointStrokeWidth)
-//       .style('opacity', pointOpacity);
-// });
-////////////////////////////////////////////////////////////////////////////////
 
 // ZOOMED MAP //////////////////////////////////////////////////////////////////
 var zProjection = d3.geoAlbers()
@@ -606,19 +657,19 @@ mapZ.append('rect')
     .attr('pointer-events', 'all')
     .style('stroke', mapBorderColor)
     .style('fill', 'none')
-    .style('stroke-width', mapBorderW)
+    .style('stroke-width', 0)
     .on('click', zMouseClick);
 
 // Load in csv of SD center lat/long coords, set zoomed map to mapZStartSD
 d3.csv(sdCentersCsv).then(function(d) {
   centers = d; // Save center coords to global variable
   if (mapZStartSD) {
-    updateZMap(mapZStartSD); // Update zoomed map to start SD
+    updateZMap(mapZStartSD, scale); // Update zoomed map to start SD
   }
 });
 
 // Updates zoomed map to target SD
-let updateZMap = function(sd) {
+let updateZMap = function(sd, scale) {
   // console.log('DISTRICT ' + sd + ' SELECTED');
   mapZ.selectAll('path').remove(); // Remove previous SD
   mapZ.selectAll('circle').remove();
@@ -634,7 +685,9 @@ let updateZMap = function(sd) {
       .attr('d', zPath)
       .attr('stroke', mapStrokeColor)
       .attr('stroke-width', mapZStrokeWidth)
-      .attr('fill', mapZFillColor)
+      .attr('fill', function(d) {
+        return schemeSat(scaleSat(+avgScores[d.properties.SchoolDist - 1]['total_avg']))
+      })
       .attr('class', function(d) {
         return 'District'
       })
@@ -859,20 +912,34 @@ gRangeWriting.call(sliderRangeWriting);
 
 // RADIO BUTTON FUNCTIONALITY
 
+let changeMap = function(alias) {
+  currMap.style('opacity', 0);
+  currLegend.style('opacity', 0);
+
+  currMap = largeMaps.get(alias)
+  currLegend = legends.get(alias)
+
+  currMap.style('opacity', 1);
+  currLegend.style('opacity', 1);
+}
+
 $('#wifiButton').on('click', function(event) {
   console.log("wifi button clicked");
 });
 
 $('#noiseButton').on('click', function(event) {
   console.log("noise clicked");
+  changeMap('sat');
 });
 
 $('#incomeButton').on('click', function(event) {
   console.log("income clicked");
+  changeMap('income');
 });
 
 $('#arrestsButton').on('click', function(event) {
-  console.log("arrests clicked");
+  console.log("crimes clicked");
+  changeMap('crimes');
 });
 
 // SMALL MAPS /////////////////////////////////////////////////////////////////
@@ -899,7 +966,7 @@ let createSection = function(id, heat_data, heat, hsl, domain, point_data, point
   }
 }
 
-var SMALL_MAP_SCALE_FACTOR = 0.5
+var SMALL_MAP_SCALE_FACTOR = .5
 var SMALL_MAP_WIDTH = mapWidth * SMALL_MAP_SCALE_FACTOR
 var SMALL_MAP_HEIGHT = mapHeight * SMALL_MAP_SCALE_FACTOR
 var SMALL_MAP_SCALE = mapScale * SMALL_MAP_SCALE_FACTOR
@@ -930,11 +997,52 @@ d3.csv(sdDataCsv).then(function(data) {
     }
   });
 
+  /////////////////////////
 
-  d3.csv(scoresCsv).then(function(d) {
-    createSection('#map-sat', maps.get(alias.get('score')), 1, HSL, 
-      [1000, 1600], d, 1, 'school');
-  });
+  var largeMapPro = createProjection(mapWidth, mapHeight, mapScale);
+
+  var mapSat = generateLargeMap('map-sat', schemeSat, scaleSat, largeMapPro, maps.get(alias.get('score')));
+  plotPoints(mapSat, largeMapPro, scores, 'school', pointRadius, pointColor,
+             pointStrokeColor, pointStrokeWidth, pointOpacity);
+  var legendSat = generateLegend('#legend-sat', 'gradient-sat', scaleW, scaleH, schemeSat, domainSat, defaultTicks);
+  largeMaps.set('sat', mapSat);
+  legends.set('sat', legendSat);
+
+  d3.select('#map').select('#map-sat').style('opacity', 1);
+  d3.select('#legend-sat').select('svg').style('opacity', 1);
+  currMap = mapSat;
+  currScheme = schemeSat;
+  currScale = scaleSat;
+  currLegend = legendSat
+
+  // var mapEthWhite = generateLargeMap('map-ethWhite', schemeWhite, scaleWhite, largeMapPro, maps.get(alias.get('white')));
+  // generateLegend('#legend-ethWhite', 'gradient-ethWhite', scaleW, scaleH, schemeWhite, domainWhite, defaultTicks);
+
+  // var mapEthBlack = generateLargeMap('map-ethBlack', schemeBlack, scaleBlack, largeMapPro, maps.get(alias.get('black')));
+  // generateLegend('#legend-ethBlack', 'gradient-ethBlack', scaleW, scaleH, schemeBlack, domainBlack, defaultTicks);
+
+  // var mapEthAsian = generateLargeMap('map-ethAsian', schemeAsian, scaleAsian, largeMapPro, maps.get(alias.get('asian')));
+  // generateLegend('#legend-ethAsian', 'gradient-ethAsian', scaleW, scaleH, schemeAsian, domainAsian, defaultTicks);
+
+  // var mapEthHispanic = generateLargeMap('map-ethHispanic', schemeHispanic, scaleHispanic, largeMapPro, maps.get(alias.get('hispanic')));
+  // generateLegend('#legend-ethHispanic', 'gradient-ethHispanic', scaleW, scaleH, schemeHispanic, domainHispanic, defaultTicks);
+
+  var mapCrime = generateLargeMap('map-crime', schemeCrime, scaleCrime, largeMapPro, maps.get(alias.get('crimes')));
+  var legendCrime = generateLegend('#legend-crime', 'gradient-crime', scaleW, scaleH, schemeCrime, domainCrime, defaultTicks);
+  largeMaps.set('crimes', mapCrime);
+  legends.set('crimes', legendCrime);
+
+  var mapIncome = generateLargeMap('map-income', schemeIncome, scaleIncome, largeMapPro, maps.get(alias.get('income')));
+  var legendIncome = generateLegend('#legend-income', 'gradient-income', scaleW, scaleH, schemeIncome, domainIncome, defaultTicks);
+  largeMaps.set('income', mapIncome);
+  legends.set('income', legendIncome);
+
+  ///////////////////////////////////
+
+  // d3.csv(scoresCsv).then(function(d) {
+  //   createSection('#map-sat', maps.get(alias.get('score')), 1, HSL, 
+  //     [1000, 1600], d, 1, 'school');
+  // });
 
   createSection('#map-eth-white', maps.get(alias.get('white')), 1, HSL,
     [0, 100], null, 0, null);
@@ -947,7 +1055,7 @@ d3.csv(sdDataCsv).then(function(data) {
 
   createSection('#map-wifi', maps.get(alias.get('wifi')), 1, HSL,
     [0, 100], null, 0, null);
-  createSection('#map-noise', maps.get(alias.get('noise')), 1, HSL,
+   createSection('#map-noise', maps.get(alias.get('noise')), 1, HSL,
     [0, 5000], null, 0, null);
   createSection('#map-crime', maps.get(alias.get('crimes')), 1, HSL,
     [0, 3000], null, 0, null);
