@@ -15,58 +15,219 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
     <script src="https://d3js.org/d3.v5.js"></script>
     <script src="https://unpkg.com/d3-simple-slider" c=""></script>
+
+    <link rel="stylesheet" href="https://uw-cse442-wi20.github.io/FP-wifi-crime-and-sat-scores-of-nyc/party.0fc13805.css">
+    <link rel="stylesheet" href="https://uw-cse442-wi20.github.io/FP-wifi-crime-and-sat-scores-of-nyc/weefee.fe1fd2f0.css">
   </head>
 
   <body>
-    <h1 style="margin-left: 150px; margin-top: 40px; margin-bottom: 40px;">SAT Scores by High School in NYC</h1>   
-    
-    <div class="d-flex flex-row">
-      <div class="col-1"></div>  <!-- blank column for padding -->
 
-      <div class="col-5">
-        <div id="map"></div>  <!-- map element -->
-      </div>
-
-      <div class="col-5">  <!-- distribution chart and zoomed in map -->
-        <p>Click on a school district to display its overall SAT stats, or select a specific school in the lower right map for school-specific SAT stats. Click the button before beginning.</p>
-        <div id="stats" style="background-color:white"> </div>
-        <div id="chart1" style="background-color:white"> </div>
-        <div id="map-zoomed" style="background-color:white; margin-top:30px">
+    <!-- party -->
+    <div class="party">
+      <div class="party-section">
+        <h3>Party Party</h3>
+        <hr>
+        <div class="row">
+          <div class="col-lg-6" id="viz">
+            <div class="row">
+              <div class="col-sm-2 borough-title">
+                <h4>Borough</h4>
+              </div>
+              <div class="col-sm-4 left-circle-title">
+                <h5>Total Noise Complaints</h5>
+              </div>
+              <div class="col-sm-4 right-circle-title">
+                <h5>Noise Complaints per Square Mile</h5>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-5 story-to-tell">
+            <h4>A story to tell</h4>
+            <br>
+            <p>
+              Here we have a visualization of the total noise complaints in each New York City borough from
+              the year 2014-2015. How might noise complaints affect SAT scores of high schools in each bourough?
+              What happens when we factor in noise complaints per square mile?
+            </p>
+            <button class="reveal-btn">Tell me more...</button>
+            <p class="reveal-text">
+              We reveal the true, more relative circle sizes based off the <b>noise complaint density.</b>
+              Note how the circle sizes change once square mileage is factored into the picture.<br>
+              How might the level of noise complaints correlate with crime, income, and even WiFi?
+            </p>
+          </div>
         </div>
       </div>
-    </div>    
-
-    <div id="flexRow" class="d-flex flex-row" style="margin-top:30px">
-      <div class="col-1"></div>  <!-- blank column for padding -->
-      <button id="buttonFinish" type="button" class="btn btn-dark" style="margin-left:15px">Begin Exploring</button>
     </div>
 
-    <div id="flexRowSliders" class="d-flex flex-row" style="margin-top:30px">
-      <div class="col-1"></div>  <!-- blank column for padding -->
-
-      <div class="col-3">
-        <div id="math" class="d3-slider d3-slider-horizontal"></div>  <!-- slider element -->
-        <p id="mathText" class="text-center">Average Score (SAT Math)</p>
+    <!-- weefee -->
+    <div class="weefee">
+      <div class="weefee-section">
+        <h3>Weefee</h3>
+        <hr>
+        <div class="row">
+          <div class="col-lg-6" id="viz2">
+            <div class="row">
+              <div class="col-sm-2 borough-title">
+                <h4>Borough</h4>
+              </div>
+              <div class="col-sm-4 left-circle-title">
+                <h5>Total Wifi Hotspot Locations</h5>
+              </div>
+              <div class="col-sm-4 right-circle-title2">
+                <h5>Wifi Hotspots per Square Mile</h5>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-5 story-to-tell">
+            <h4>The story goes on</h4>
+            <br>
+            <p>
+              Now we have a visualization of the total wifi hotspots in each New York City borough from
+              the year 2014-2015. How might wifi hotspot presence affect SAT scores of high schools in each bourough?
+              What happens when we factor in the number of hotspots per square mile?
+            </p>
+            <button class="reveal-btn2">Tell me more...</button>
+            <p class="reveal-text2">
+              We reveal the true, more relative circle sizes based off the <b>wifi hotspot density.</b>
+              Note how the circle sizes change once square mileage is factored into the picture.<br>
+              How might the density of wifi hotspots correlate with crime, income, and even noise complaints?
+            </p>
+          </div>
+        </div>
       </div>
+    </div>
 
-      <div class="col-3">
-        <div id="reading" class="d3-slider d3-slider-horizontal"></div>  <!-- slider element -->
-        <p id="readingText" class="text-center">Average Score (SAT Reading)</p>
-      </div>
 
-      <div class="col-3">
-        <div id="writing" class="d3-slider d3-slider-horizontal"></div>  <!-- slider element -->
-        <p id="writingText" class="text-center">Average Score (SAT Writing)</p>
-      </div>
-    </div>    
+    <div id="fullpage">
+      <div class="section active" data-anchor="slide1">
+        <div class="d-flex flex-row">
+          <div class="col-1"></div>
     
-    <script src="https://uw-cse442-wi20.github.io/FP-wifi-crime-and-sat-scores-of-nyc/src.3e8e2e23.js"></script>
+          <div class="col-5">
+            <div style="width:420px; margin-left: 160px; margin-top: 20px">
+              <div id="centered" style="margin: 0 auto; width:420px;">
+                <p><b>Select a feature to underlay as a density map below.</b></p>
+              </div>
+            </div>
+        
+            <div class="btn-group btn-group-toggle" data-toggle="buttons" style="margin-left: 150px; margin-bottom: 25px;">
+              <label class="btn btn-secondary active" id="wifiButton">
+                <input type="radio" name="options" autocomplete="off" checked=""> Wi-Fi Hotspots
+              </label>
+              <label class="btn btn-secondary" id="noiseButton">
+                <input type="radio" name="options" autocomplete="off"> Noise Complaints
+              </label>
+              <label class="btn btn-secondary" id="incomeButton">
+                <input type="radio" name="options" autocomplete="off"> Income
+              </label>
+              <label class="btn btn-secondary" id="arrestsButton">
+                <input type="radio" name="options" autocomplete="off"> Arrests
+              </label>
+              <label class="btn btn-secondary" id="whiteButton">
+                <input type="radio" name="options" autocomplete="off"> White
+              </label>
+              <label class="btn btn-secondary" id="blackButton">
+                <input type="radio" name="options" autocomplete="off"> Black
+              </label>
+              <label class="btn btn-secondary" id="asianButton">
+                <input type="radio" name="options" autocomplete="off"> Asian
+              </label>
+              <label class="btn btn-secondary" id="hispanicButton">
+                <input type="radio" name="options" autocomplete="off"> Hispanic
+              </label>
+            </div>
+        
+            <div style="width:600px; margin-left: 70px; margin-bottom: 20px;">
+              <div id="centered" style="margin: 0 auto; width:600px;">
+                <p>Click on a school district on the map below to display its overall SAT stats, or go ahead and select a specific school on the map to the right for school-specific SAT stats.</p>
+              </div>
+            </div>
+    
+            <div id="map" style="margin-left: 50px"></div>  <!-- map element -->
+          </div>
+
+          <div id="legend-sat"></div>
+          <div id="legend-ethWhite"></div>
+          <div id="legend-ethBlack"></div>
+          <div id="legend-ethHispanic"></div>
+          <div id="legend-ethAsian"></div>
+          <div id="legend-wifi"></div>
+          <div id="legend-noise"></div>
+          <div id="legend-crime"></div>
+          <div id="legend-income"></div>
+    
+          <div class="col-5" style="margin-left:30px">  <!-- distribution chart and zoomed in map -->
+            <div id="stats" style="background-color:white; margin-top:30px; margin-bottom:20px; margin-left:2px"> </div>
+            <div id="chart1" style="background-color:white; margin-bottom:30px;"> </div>
+            <div id="map-zoomed" style="background-color:white; margin-left:20px">
+            </div>
+          </div> 
+    
+        </div>
+    
+        <div id="flexRowSliders" class="d-flex flex-row" style="margin-left:35px">
+          <div class="col-1"></div>  <!-- blank column for padding -->
+    
+          <div class="col-3">
+            <div id="math" class="d3-slider d3-slider-horizontal"></div>  <!-- slider element -->
+            <p id="mathText" class="text-center">Average Score (SAT Math)</p>
+          </div>
+    
+          <div class="col-3">
+            <div id="reading" class="d3-slider d3-slider-horizontal"></div>  <!-- slider element -->
+            <p id="readingText" class="text-center">Average Score (SAT Reading)</p>
+          </div>
+    
+          <div class="col-3">
+            <div id="writing" class="d3-slider d3-slider-horizontal"></div>  <!-- slider element -->
+            <p id="writingText" class="text-center">Average Score (SAT Writing)</p>
+          </div>
+        </div>    
+      </div>
+
+      <div class="section" data-anchor="slide2">
+        <h4>SAT Scores</h4>
+        <div class="small-map" id="map-sat" style="float: left;"></div>
+      </div>
+
+      <div class="section" data-anchor="slide3">
+        <h4>Ethnicity White - Black - Hispanic - Asian</h4>
+        <div class="small-map" id="map-eth-white" style="float: left;"></div>
+        <div class="small-map" id="map-eth-black" style="float: left;"></div>
+        <div class="small-map" id="map-eth-hispanic" style="float: left;"></div>
+        <div class="small-map" id="map-eth-asian" style="float: left;"></div>
+      </div>
+
+      <div class="section" data-anchor="slide4">
+        <h4>Wi-Fi</h4>
+        <div class="small-map" id="map-wifi"></div>
+      </div>
+
+      <div class="section" data-anchor="slide5">
+        <h4>Noise</h4>
+        <div class="small-map" id="map-noise"></div>
+      </div>
+
+      <div class="section" data-anchor="slide6">
+        <h4>Crime</h4>
+        <div class="small-map" id="map-crime"></div>
+      </div>
+
+      <div class="section" data-anchor="slide7">
+        <h4>Income</h4>
+        <div class="small-map" id="map-income"></div>
+      </div>
+    </div>
+
+    <script src="https://uw-cse442-wi20.github.io/FP-wifi-crime-and-sat-scores-of-nyc/src.136be5d0.js"></script>
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
-        
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script> 
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script src="https://uw-cse442-wi20.github.io/FP-wifi-crime-and-sat-scores-of-nyc/party.a5c0dade.js"></script>
+    <script src="https://uw-cse442-wi20.github.io/FP-wifi-crime-and-sat-scores-of-nyc/weefee.5d3ec77f.js"></script>
   </body>
-
 
 </html>
