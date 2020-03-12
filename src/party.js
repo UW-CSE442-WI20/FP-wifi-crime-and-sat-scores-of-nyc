@@ -142,6 +142,15 @@ $(".reveal-btn").click(function() {
 
 
 
+// var svg5 = d3.select("#party-map")
+//     .append("svg")
+//     .attr("width", 400)
+//     .attr("height", 400);
+
+//     let proj = createProjection(400, 400, 1);
+
+// createMap(svg5, proj, true, [3, 4, 0, 1], [0, 60000], rip, x, y, z);
+
 
 
 
