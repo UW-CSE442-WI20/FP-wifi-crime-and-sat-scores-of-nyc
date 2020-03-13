@@ -82,14 +82,14 @@ var alias = new Map(); // Map{feature_name: alias}
 var maps = new Map(); // Map{feature: Map{sd#: value}}
 
 d3.csv(sdDataCsv).then(function(data) {
-  for (var i = 0; i <= columns.length; i++) {
+  for (var i = 0; i < columns.length; i++) {
     alias.set(short_names[i], columns[i])
     maps.set(columns[i], new Map())
   }
 
   data.forEach(function(row) { // Create map for each feature
     var sd = +row.District;
-    for (var i = 0; i <= columns.length; i++) {
+    for (var i = 0; i < columns.length; i++) {
       var column = columns[i];
       if (!isNaN(sd)) {
         maps.get(column).set(sd, +row[column]);
@@ -99,7 +99,7 @@ d3.csv(sdDataCsv).then(function(data) {
   });
 });
 
-var currentData = maps.get(alias.get('income'));
+var currentData = null;
 var currentScheme = schemeIncome;
 var currentScale = scaleIncome;
 
@@ -351,7 +351,7 @@ let overviewMouseClick = function(d) { //De/select SD on mouse click
         .attr('stroke-width', selectedStrokeWidth)
         .duration(mouseTransDuration);
     selected = this;
-    updateZMap(+this.id.substring(2), maps.get(alias.get('crimes')), currentScheme, currentScale); // Update zoomed map
+    updateZMap(+this.id.substring(2), currentData, currentScheme, currentScale); // Update zoomed map
     updateDistrictStats(+this.id.substring(2)); // Update text box
   }
 
@@ -934,6 +934,7 @@ d3.csv(sdDataCsv).then(function(data) {
 
   generateLargeMap(map, largeMapPro, schemeIncome, scaleIncome, maps.get(alias.get('income')));
   generateLegend(legend, 'gradient-income', scaleW, scaleH, schemeIncome, domainIncome, defaultTicks);
+  currentData = maps.get(alias.get('income'));
 
   plotPoints(map, largeMapPro, scores, 'school', pointRadius, pointColor,
             pointStrokeColor, pointStrokeWidth, pointOpacity);
@@ -948,6 +949,7 @@ d3.csv(sdDataCsv).then(function(data) {
     generateLegend(legend, 'gradient-income', scaleW, scaleH, schemeIncome, domainIncome, defaultTicks);
     plotPoints(map, largeMapPro, scores, 'school', pointRadius, pointColor,
     pointStrokeColor, pointStrokeWidth, pointOpacity);
+    currentData = maps.get(alias.get('income'));
     currentScheme = schemeIncome;
     currentScale = scaleIncome;
   });
@@ -961,6 +963,7 @@ d3.csv(sdDataCsv).then(function(data) {
     generateLegend(legend, 'gradient-crime', scaleW, scaleH, schemeCrime, domainCrime, defaultTicks);
     plotPoints(map, largeMapPro, scores, 'school', pointRadius, pointColor,
             pointStrokeColor, pointStrokeWidth, pointOpacity);
+    currentData = maps.get(alias.get('crimes'));
     currentScheme = schemeCrime;
     currentScale = scaleCrime;
   });
@@ -974,6 +977,7 @@ d3.csv(sdDataCsv).then(function(data) {
     generateLegend(legend, 'gradient-ethAsian', scaleW, scaleH, schemeAsian, domainAsian, defaultTicks);
     plotPoints(map, largeMapPro, scores, 'school', pointRadius, pointColor,
     pointStrokeColor, pointStrokeWidth, pointOpacity);
+    currentData = maps.get(alias.get('asian'));
     currentScheme = schemeAsian;
     currentScale = scaleAsian;
   });
@@ -987,6 +991,7 @@ d3.csv(sdDataCsv).then(function(data) {
     generateLegend(legend, 'gradient-ethBlack', scaleW, scaleH, schemeBlack, domainBlack, defaultTicks);
     plotPoints(map, largeMapPro, scores, 'school', pointRadius, pointColor,
     pointStrokeColor, pointStrokeWidth, pointOpacity);
+    currentData = maps.get(alias.get('black'));
     currentScheme = schemeBlack;
     currentScale = scaleBlack;
   });
@@ -1000,6 +1005,7 @@ d3.csv(sdDataCsv).then(function(data) {
     generateLegend(legend, 'gradient-ethHispanic', scaleW, scaleH, schemeHispanic, domainHispanic, defaultTicks);
     plotPoints(map, largeMapPro, scores, 'school', pointRadius, pointColor,
     pointStrokeColor, pointStrokeWidth, pointOpacity);
+    currentData = maps.get(alias.get('hispanic'));
     currentScheme = schemeHispanic;
     currentScale = scaleHispanic;
   });
@@ -1013,6 +1019,7 @@ d3.csv(sdDataCsv).then(function(data) {
     generateLegend(legend, 'gradient-ethWhite', scaleW, scaleH, schemeWhite, domainWhite, defaultTicks);
     plotPoints(map, largeMapPro, scores, 'school', pointRadius, pointColor,
     pointStrokeColor, pointStrokeWidth, pointOpacity);
+    currentData = maps.get(alias.get('white'));
     currentScheme = schemeWhite;
     currentScale = scaleWhite;
   });
@@ -1026,6 +1033,7 @@ d3.csv(sdDataCsv).then(function(data) {
     generateLegend(legend, 'gradient-wifi', scaleW, scaleH, schemeWifi, domainWifi, defaultTicks);
     plotPoints(map, largeMapPro, scores, 'school', pointRadius, pointColor,
     pointStrokeColor, pointStrokeWidth, pointOpacity);
+    currentData = maps.get(alias.get('wifi'));
     currentScheme = schemeWifi;
     currentScale = scaleWifi;
   });
@@ -1039,6 +1047,7 @@ d3.csv(sdDataCsv).then(function(data) {
     generateLegend(legend, 'gradient-noise', scaleW, scaleH, schemeNoise, domainNoise, defaultTicks);
     plotPoints(map, largeMapPro, scores, 'school', pointRadius, pointColor,
     pointStrokeColor, pointStrokeWidth, pointOpacity);
+    currentData = maps.get(alias.get('noise'));
     currentScheme = schemeNoise;
     currentScale = scaleNoise;
   });
