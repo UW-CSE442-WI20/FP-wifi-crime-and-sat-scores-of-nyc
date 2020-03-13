@@ -5,7 +5,7 @@ import partycsv from "./party_in_nyc.csv";
 
 const XSTART = 0;
 
-const YSPACING_SCALE = 160;
+const YSPACING_SCALE = 100;
 const YSPACING_OFFSET = 100;
 
 const RAW_CIRCLE_ADJUSTMENT = 4;
