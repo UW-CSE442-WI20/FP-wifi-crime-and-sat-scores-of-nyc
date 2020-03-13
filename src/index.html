@@ -11,6 +11,44 @@
       #reading {
         padding-top: 0px;
       }
+
+      .axis path,
+      .axis line {
+        fill: none;
+        stroke: #000;
+        shape-rendering: crispEdges;
+      }
+
+      .bar {
+        fill: steelblue;
+      }
+
+      .x.axis path {
+        display: none;
+      }
+
+      .tooltip{
+        text-anchor: middle;
+        font-family: sans-serif;
+        font-size: 7px; 
+        font-weight: bold;
+        fill:black; 
+      }
+
+
+      .dot {
+        stroke: none;
+      }
+
+
+
+      label {
+        position: relative;
+        top: 50px;    
+        right: -20px;
+        color: black;
+      }
+
     </style>
 
     <!-- Bootstrap -->
@@ -20,6 +58,7 @@
 
     <link rel="stylesheet" href="./party.css">
     <link rel="stylesheet" href="./weefee.css">
+    <link rel="stylesheet" href="./ethnicity.css">
   </head>
 
   <body>
@@ -131,6 +170,28 @@
 
           </div>
         </div>
+      </div>
+    </div>
+
+
+    <!-- Ethnicity -->
+    <div class="ethnicity">
+      <div class="ethnicity-section">
+        <h3>Ethnicity</h3>
+        <hr>
+        
+        <div class="row">
+          <div class="col-lg-6" id="viz3"> 
+            <label><input type="checkbox"> Sort values</label>
+          </div>
+          <div class="col-lg-6" id="viz4"> 
+            <label><input type="checkbox" id="checkBox"> Regressional line</label>
+          </div>
+             <div class="col-lg-6" id="viz5"> 
+
+        </div>
+          
+      
       </div>
     </div>
 
@@ -264,6 +325,7 @@
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
     <script src="./party.js"></script>
     <script src="./weefee.js"></script>
+    <script src="./index_section.js"></script>
   </body>
 
 </html>
