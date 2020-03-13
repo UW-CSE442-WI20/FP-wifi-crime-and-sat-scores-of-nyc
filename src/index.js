@@ -192,7 +192,14 @@ let generateLargeMap = function(svg, projection, scheme, scale, data) {
         .attr('id', 'currentPath')
         .attr('d', path)
         .attr('stroke', mapStrokeColor)
-        .attr('stroke-width', mapStrokeWidth)
+        .attr('stroke-width', function(d) {
+          if (selected && d.properties.SchoolDist === +selected.id.substring(2)) {
+            selected = this;
+            return selectedStrokeWidth;
+          } else {
+            return mapStrokeWidth;
+          }
+        })
         .attr('fill', function(d) {
           var sd = d.properties.SchoolDist
           var value = data.get(sd);
@@ -329,6 +336,7 @@ let overviewMouseLeave = function(d) { // Unhighlight SD on mouse leave
 };
 
 let overviewMouseClick = function(d) { //De/select SD on mouse click
+  console.log(d)
   var unselect = this === selected;
   if (selected) { // Unselect selected SD if one exists
     statBox.selectAll('text').remove();
@@ -347,7 +355,7 @@ let overviewMouseClick = function(d) { //De/select SD on mouse click
     zSelected = null;
     d3.select(this)
         .transition()
-        .style('opacity', 1)
+        .style('opacity', mapOpacity)
         .attr('stroke-width', selectedStrokeWidth)
         .duration(mouseTransDuration);
     selected = this;
@@ -952,6 +960,9 @@ d3.csv(sdDataCsv).then(function(data) {
     currentData = maps.get(alias.get('income'));
     currentScheme = schemeIncome;
     currentScale = scaleIncome;
+    if (selected) {
+      updateZMap(+selected.id.substring(2), currentData, currentScheme, currentScale);
+    }
   });
 
   $('#arrestsButton').on('click', function(event) {
@@ -966,6 +977,9 @@ d3.csv(sdDataCsv).then(function(data) {
     currentData = maps.get(alias.get('crimes'));
     currentScheme = schemeCrime;
     currentScale = scaleCrime;
+    if (selected) {
+      updateZMap(+selected.id.substring(2), currentData, currentScheme, currentScale);
+    }
   });
 
   $('#asianButton').on('click', function(event) {
@@ -980,6 +994,10 @@ d3.csv(sdDataCsv).then(function(data) {
     currentData = maps.get(alias.get('asian'));
     currentScheme = schemeAsian;
     currentScale = scaleAsian;
+    console.log(selected)
+    if (selected) {
+      updateZMap(+selected.id.substring(2), currentData, currentScheme, currentScale);
+    }
   });
 
   $('#blackButton').on('click', function(event) {
@@ -994,6 +1012,9 @@ d3.csv(sdDataCsv).then(function(data) {
     currentData = maps.get(alias.get('black'));
     currentScheme = schemeBlack;
     currentScale = scaleBlack;
+    if (selected) {
+      updateZMap(+selected.id.substring(2), currentData, currentScheme, currentScale);
+    }
   });
 
   $('#hispanicButton').on('click', function(event) {
@@ -1008,6 +1029,9 @@ d3.csv(sdDataCsv).then(function(data) {
     currentData = maps.get(alias.get('hispanic'));
     currentScheme = schemeHispanic;
     currentScale = scaleHispanic;
+    if (selected) {
+      updateZMap(+selected.id.substring(2), currentData, currentScheme, currentScale);
+    }
   });
 
   $('#whiteButton').on('click', function(event) {
@@ -1022,6 +1046,9 @@ d3.csv(sdDataCsv).then(function(data) {
     currentData = maps.get(alias.get('white'));
     currentScheme = schemeWhite;
     currentScale = scaleWhite;
+    if (selected) {
+      updateZMap(+selected.id.substring(2), currentData, currentScheme, currentScale);
+    }
   });
 
   $('#wifiButton').on('click', function(event) {
@@ -1036,6 +1063,9 @@ d3.csv(sdDataCsv).then(function(data) {
     currentData = maps.get(alias.get('wifi'));
     currentScheme = schemeWifi;
     currentScale = scaleWifi;
+    if (selected) {
+      updateZMap(+selected.id.substring(2), currentData, currentScheme, currentScale);
+    }
   });
 
   $('#noiseButton').on('click', function(event) {
@@ -1050,6 +1080,9 @@ d3.csv(sdDataCsv).then(function(data) {
     currentData = maps.get(alias.get('noise'));
     currentScheme = schemeNoise;
     currentScale = scaleNoise;
+    if (selected) {
+      updateZMap(+selected.id.substring(2), currentData, currentScheme, currentScale);
+    }
   });
 
   // SLIDER ELEMENTS //////////////////////////////////////////////////////////////
