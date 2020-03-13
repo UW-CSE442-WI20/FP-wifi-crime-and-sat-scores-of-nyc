@@ -44,8 +44,8 @@
 
       label {
         position: relative;
-        top: 50px;    
-        right: -20px;
+        top: 140px;    
+        right: -590px;
         color: black;
       }
 
@@ -62,6 +62,32 @@
   </head>
 
   <body>
+    <!-- Introduction -->
+    <div class="introduction">
+      <div class="introduction-section">
+        <h3>Introduction</h3>
+        <p>
+          A higher SAT score for a school normally means a higher graduation rate for the school students, which is pretty evident from the from the graph showcased below.
+          But what factors are involved in ensuring a high SAT score or even a low SAT score for that matter? This is exactly what we are going to try and answer in the following few sections of this project.
+        </p>      
+        <hr>
+        <div class="row">
+          <div class="col-lg-6" id="vizIntro"> </div>
+        </div>
+        <div class = "row"> 
+          <p>
+            Income Variable :
+            One of the factors that we wanted to look at, which could possibly affect the SAT score results of the New York schools was the mean income level of the house holds. One of the reasons behind it was having a higher mean income means access to more facilities such as private coaching, private schools etc and we wanted to know whether there was any correlation between the income and the SAT results.
+
+            So we plotted the mean income of the different school districts along with their mean SAT scores and as you can see there is a small positive correlation between the two factors. As a result, income and SAT scores are somewhat related to each other, even though they might not have a profound effect on each other.
+          </p>
+          <div class="col-lg-6" id="vizIntro2"> 
+            <label><input type="checkbox" id="CheckBoxIncome"> Regressional line</label>
+          </div>
+        </div>
+      </div>
+    </div>
+
 
     <!-- party -->
     <div class="party">
@@ -178,22 +204,55 @@
     <div class="ethnicity">
       <div class="ethnicity-section">
         <h3>Ethnicity</h3>
+        <p>
+          Ethnicity of a student is another interesting aspect to look at while searching for different factors that could affect the SAT score. Does belonging to a different ethnicity actually have an advantage or is it just a misconception?
+
+          In order to tackle that, we will compare the distribution of the 4 ethnicities: asian, black, hispanic and white in the 10 different score intervals, where each interval contains 100 SAT scores, and see if any particular ethnicity has a larger presence in particular score intervals or are each of them randomly distributed.
+        <p>
+
         <hr>
         
         <div class="row">
           <div class="col-lg-6" id="viz3"> 
-            <label><input type="checkbox"> Sort values</label>
+            <p>
+              Click at different legend to specify data of certain ethnicity. 
+              Check the box to sort the value ascendingly.
+            </p>
+            <label><input type="checkbox" id="CheckBoxBar"> Sort values</label>
           </div>
-          <div class="col-lg-6" id="viz4"> 
+          <!-- <div class="col-lg-6" id="viz4"> 
             <label><input type="checkbox" id="checkBox"> Regressional line</label>
           </div>
-             <div class="col-lg-6" id="viz5"> 
+            <div class="col-lg-6" id="viz5">  </div> -->
 
         </div>
           
       
       </div>
     </div>
+
+
+    <!--
+      Introduction
+
+      A higher SAT score for a school normally means a higher graduation rate for the school students, which is pretty evident from the from the graph showcased below.
+      But what factors are involved in ensuring a high SAT score or even a low SAT score for that matter? This is exactly what we are going to try and answer in the following few sections of this project.
+
+
+      Income Variable
+
+      One of the factors that we wanted to look at, which could possibly affect the SAT score results of the New York schools was the mean income level of the house holds. One of the reasons behind it was having a higher mean income means access to more facilities such as private coaching, private schools etc and we wanted to know whether there was any correlation between the income and the SAT results.
+
+      So we plotted the mean income of the different school districts along with their mean SAT scores and as you can see there is a small positive correlation between the two factors. As a result, income and SAT scores are somewhat related to each other, even though they might not have a profound effect on each other.
+
+
+      Ethnicity Variable
+
+      Ethnicity of a student is another interesting aspect to look at while searching for different factors that could affect the SAT score. Does belonging to a different ethnicity actually have an advantage or is it just a misconception?
+
+      In order to tackle that, we will compare the distribution of the 4 ethnicities: asian, black, hispanic and white in the 10 different score intervals, where each interval contains 100 SAT scores, and see if any particular ethnicity has a larger presence in particular score intervals or are each of them randomly distributed.
+
+    -->
 
 
     <div id="fullpage">

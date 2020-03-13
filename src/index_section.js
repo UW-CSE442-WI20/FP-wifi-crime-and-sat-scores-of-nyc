@@ -15,34 +15,34 @@ var mapZWidth = 350 * 1.2;
 
 
 // SECTION FOR GRADUATION RATE VS SCORE SCATTER PLOT
-var svg_grad = d3.select("#viz5")
+var svg_grad = d3.select("#vizIntro")
     .append("svg")
-      .attr("width", mapZWidth + 150)
-      .attr("height", 500) // 300
+      .attr("width", mapZWidth + 250)
+      .attr("height", 400) // 300
       .attr('x', 0)
       .attr('y', 0)
       .attr("transform",
             "translate(" + 10 + "," + 10 + ")");
 
-svg_grad.append('rect')  // This is for the box contour.
-  .attr('x', 0)
-  .attr('y', 0)
-  .attr('height', 300)
-  .attr('width', mapZWidth + 150) // 420
-  .style('stroke', 'black')
-  .style('fill', 'none')
-  .style('stroke-width', 2);
+// svg_grad.append('rect')  // This is for the box contour.
+//   .attr('x', 0)
+//   .attr('y', 0)
+//   .attr('height', 300)
+//   .attr('width', mapZWidth + 150) // 420
+//   .style('stroke', 'black')
+//   .style('fill', 'none')
+//   .style('stroke-width', 2);
 
 var xg = d3.scaleLinear()
   .domain([50, 100])
-  .range([0, 420]);
+  .range([0, 550]);
 
 var yg = d3.scaleLinear()
     .domain([1000, 1600]) 
-    .range([120, 0]); 
+    .range([250, 0]); 
 
 svg_grad.append("g")
-     .attr("transform", "translate(80, 180)")
+     .attr("transform", "translate(80, 310)")
      .call(d3.axisBottom(xg));
 
 svg_grad.append("g")
@@ -51,19 +51,19 @@ svg_grad.append("g")
 
 svg_grad.append("text")
           .attr("text-anchor", "middle")  // this makes it easy to centre the text as the transform is applied to the anchor
-          .attr("transform", "translate("+ (70/2) +","+(200/2)+")rotate(-90)")  // text is drawn off the screen top left, move down and out and rotate
+          .attr("transform", "translate("+ (70/2) +","+(300/2)+")rotate(-90)")  // text is drawn off the screen top left, move down and out and rotate
           .text("SAT Score");
 
 svg_grad.append("text")
           .attr("text-anchor", "middle")  // this makes it easy to centre the text as the transform is applied to the anchor
-          .attr("transform", "translate("+ (570/2) +","+(300 - 80)+")")  // text is drawn off the screen top left, move down and out and rotate
+          .attr("transform", "translate("+ (570/2) +","+(350)+")")  // text is drawn off the screen top left, move down and out and rotate
           .text("Graduation Rate (%)");
 
 
 
 d3.csv(work).then(function(data){
 
-   var tooltip = d3.select("#viz5").append("div")
+   var tooltip = d3.select("#vizIntro").append("div")
                   .attr("class", "tooltip")
                   .style('border', '1px solid steelblue')
                   .style("opacity", 0);
@@ -101,12 +101,12 @@ d3.csv(work).then(function(data){
    var regMouseover = function(d) {
     console.log("Show");
     var html  = "Slope : 8.6732" + "<br/>" +
-                "Intercept : 645.8" + "</span> <br/>";    // Can make the K bold.
+                "Intercept : 645.8" + "<br/>";    // Can make the K bold.
                
 
     tooltip.html(html)
-        .style("left", xg(75) + 80 - 40 + "px")
-        .style("top", yg(1200) - 30 + "px")
+        .style("left", xg(95) + 80 - 40 + "px")
+        .style("top", yg(1400) - 30 + "px")
       .transition()
         .duration(100) // ms
         .style("opacity", .9) // started as 0!
@@ -166,52 +166,52 @@ d3.csv(work).then(function(data){
 
 // SECTION FOR INCOME VS SCORE LINE CHART
 
-var svg_income = d3.select("#viz4")
+var svg_income = d3.select("#vizIntro2")
     .append("svg")
-      .attr("width", mapZWidth + 150)
-      .attr("height", 500) // 300
+      .attr("width", mapZWidth + 400)
+      .attr("height", 400) // 300
       .attr('x', 0)
       .attr('y', 0)
       .attr("transform",
             "translate(" + 10 + "," + 10 + ")");
 
-svg_income.append('rect')  // This is for the box contour.
-  .attr('x', 0)
-  .attr('y', 0)
-  .attr('height', 300)
-  .attr('width', mapZWidth + 150) // 420
-  .style('stroke', 'black')
-  .style('fill', 'none')
-  .style('stroke-width', 2);
+// svg_income.append('rect')  // This is for the box contour.
+//   .attr('x', 0)
+//   .attr('y', 0)
+//   .attr('height', 300)
+//   .attr('width', mapZWidth + 150) // 420
+//   .style('stroke', 'black')
+//   .style('fill', 'none')
+//   .style('stroke-width', 2);
 
 
 var numberOfDistrict = 33;
 
 var x = d3.scaleLinear()
   .domain([20000, 150000])
-  .range([0, 420]);
+  .range([0, 550]);
 
 var y = d3.scaleLinear()
     .domain([1000, 1600]) 
-    .range([120, 0]); 
+    .range([200, 0]); 
 
 svg_income.append("g")
-     .attr("transform", "translate(70, 180)")
+     .attr("transform", "translate(70, 230)")
      .call(d3.axisBottom(x));
 
 svg_income.append("g")
-     .attr("transform", "translate(70, 60)")
+     .attr("transform", "translate(70, 30)")
      .call(d3.axisLeft(y));
 
 
 svg_income.append("text")
           .attr("text-anchor", "middle")  // this makes it easy to centre the text as the transform is applied to the anchor
-          .attr("transform", "translate("+ (60/2) +","+(220/2)+")rotate(-90)")  // text is drawn off the screen top left, move down and out and rotate
+          .attr("transform", "translate("+ (60/2) +","+(250/2)+")rotate(-90)")  // text is drawn off the screen top left, move down and out and rotate
           .text("SAT Score");
 
 svg_income.append("text")
           .attr("text-anchor", "middle")  // this makes it easy to centre the text as the transform is applied to the anchor
-          .attr("transform", "translate("+ (570/2) +","+(300-80)+")")  // text is drawn off the screen top left, move down and out and rotate
+          .attr("transform", "translate("+ (570/2) +","+(300-30)+")")  // text is drawn off the screen top left, move down and out and rotate
           .text("District Income ($)");
 
 
@@ -259,7 +259,7 @@ d3.csv(districtData).then(function(data){
 
     var line1 = d3.line()
       .x(function(d) { return x(d[0]) + 70; }) // set the x values for the line generator
-      .y(function(d) { return y(d[1]) + 60; }) // set the y values for the line generator 
+      .y(function(d) { return y(d[1]) + 30; }) // set the y values for the line generator 
       .curve(d3.curveCardinal);
     var path = svg_income.append("path")
       //.datum(data_income) // 10. Binds data to the line 
@@ -296,7 +296,7 @@ d3.csv(districtData).then(function(data){
       .ease(d3.easeLinear) // Set Easing option
       .attr("stroke-dashoffset", 0) // Set final value of dash-offset for transition
 
-    var tooltip = d3.select("#viz4").append("div")
+    var tooltip = d3.select("#vizIntro2").append("div")
                   .attr("class", "tooltip")
                   .style('border', '1px solid steelblue')
                   .style("opacity", 0);
@@ -312,10 +312,10 @@ d3.csv(districtData).then(function(data){
                   "<b>" + "</b> average SAT score : <b/>" + Math.round(d[1]) + "</b>";
 
       tooltip.html(html)
-          .style("left", x(d[0]) + 70 - 40 + "px")
-          .style("top", y(d[1]) + 60 + "px")
+          .style("left", x(d[0]) + 70 + "px")
+          .style("top", y(d[1]) - 30 + "px")
         .transition()
-          .duration(200) // ms
+          .duration(100) // ms
           .style("opacity", .9) // started as 0!
 
     };
@@ -325,7 +325,7 @@ d3.csv(districtData).then(function(data){
 	  var tipMouseout = function(d) {
 	  		console.log("out");
 	      tooltip.transition()
-	          .duration(300) // ms
+	          .duration(100) // ms
 	          .style("opacity", 0); // don't care about position!
 	  };
 
@@ -338,7 +338,7 @@ d3.csv(districtData).then(function(data){
         .attr("class", "dot")
         .attr("r", 5.5) // radius size, could map to another data dimension
         .attr("cx", function(d) { return x( d[0] ) + 70; })     // x position. 40 is the offset.
-        .attr("cy", function(d) { return y( d[1] ) + 60; })  // y position. 60 is the offset.
+        .attr("cy", function(d) { return y( d[1] ) + 30; })  // y position. 60 is the offset.
         .style("fill", "#008080")
         .on("mouseover", tipMouseover)
         .on("mouseout", tipMouseout);
@@ -348,7 +348,7 @@ d3.csv(districtData).then(function(data){
 
     var update = function () {
     	console.log("yes");
-    	 if (d3.select("#checkBox").property("checked"))
+    	 if (d3.select("#CheckBoxIncome").property("checked"))
     	 {
     	 	svg_income.append("line")
         	.style("stroke", "blue")  // colour the line
@@ -356,24 +356,31 @@ d3.csv(districtData).then(function(data){
           .style("opacity", 0.5)
         	.attr("id", "reg")
         	.attr("x1", x(25000) + 70)     // x position of the first end of the line
-        	.attr("y1", y(1206) + 60)      // y position of the first end of the line
+        	.attr("y1", y(1206) + 30)      // y position of the first end of the line
         	.attr("x2", x(140000) + 70)     // x position of the second end of the line
-        	.attr("y2", y(1402) + 60);  
+        	.attr("y2", y(1402) + 30);  
+
+        svg_income.append("text")
+          .attr("text-anchor", "middle")  // this makes it easy to centre the text as the transform is applied to the anchor
+          .attr("transform", "translate("+ (x(140000) + 70) +","+(y(1402))+")")  // text is drawn off the screen top left, move down and out and rotate
+          .attr("id", "tt")
+          .text("Slope : 0.00169, Intercept : 1165");
+
+
+
     	 }
     	 else{
     	 	svg_income.select("#reg").remove();
+        svg_income.select("#tt").remove();
     	 }
 
     	
     };
 
 
-    //d3.select('#checkBox').on('change', update);
-    d3.select("#checkBox").on("change",update);
-			update();
-    
-   
-    //svg_income.call(checkBox);
+    d3.select("#CheckBoxIncome").property("disabled", false);
+    d3.select("#CheckBoxIncome").on("change", update);
+		update();
 
 
 
@@ -446,45 +453,48 @@ d3.csv(districtData).then(function(data){
 
 //// SECTION FOR INTERACTIVE AND SORTABLE BAR CHART
 
+
+var width_t =  mapZWidth + 300; // mapZWidth == 420.
+var height_t = 550;
 var svg_t = d3.select("#viz3")
     .append("svg")
-      .attr("width", mapZWidth + 150)
-      .attr("height", 500)
+      .attr("width", width_t + 100) 
+      .attr("height", height_t)
       .attr('x', 0)
       .attr('y', 0)
       .attr("transform",
             "translate(" + 10 + "," + 10 + ")");
 
-svg_t.append('rect')  // This is for the box contour.
-  .attr('x', 0)
-  .attr('y', 0)
-  .attr('height', 500)
-  .attr('width', mapZWidth + 150) // 420
-  .style('stroke', 'black')
-  .style('fill', 'none')
-  .style('stroke-width', 2);
+// svg_t.append('rect')  // This is for the box contour.
+//   .attr('x', 0)
+//   .attr('y', 0)
+//   .attr('height', height_t)
+//   .attr('width', width_t) 
+//   .style('stroke', 'black')
+//   .style('fill', 'none')
+//   .style('stroke-width', 2);
 
 
 var xt = d3.scaleBand()
-        .range([0, 420])
+        .range([0, width_t - 80])
         .padding([0.2]);
 
 var yt = d3.scaleLinear()
     .rangeRound([250, 0]);
 
 var color = d3.scaleOrdinal()
-    .range(['#e41a1c','#377eb8','#4daf4a', '#ffa500']);  // '#e41a1c','#377eb8','#4daf4a', '#ffa500'
+    .range(["9ac6a3",'#7ea8e2','#cc94c5', '#dca684']);  // '#e41a1c','#377eb8','#4daf4a', '#ffa500'
     // "#98abc5", "#8a89a6", "#7b6888", "#6b486b"
-
+    // '#e41a1c','#377eb8','#4daf4a', '#ffa500'
 
 
 svg_t.append("text")
-       .attr("transform", "translate("+ (570/2) +","+(500 - 50)+")")  // text is drawn off the screen top left, move down and out and rotate
+       .attr("transform", "translate("+ (width_t/2) +","+(height_t - 90)+")")  // text is drawn off the screen top left, move down and out and rotate
        .style("text-anchor", "middle")
        .text("Score Range");
 
 svg_t.append("text")
-       .attr("transform", "translate("+ (25) +","+(280)+")rotate(-90)")  // text is drawn off the screen top left, move down and out and rotate
+       .attr("transform", "translate("+ (25) +","+(height_t/2)+")rotate(-90)")  // text is drawn off the screen top left, move down and out and rotate
        .style("text-anchor", "middle")
        .text("Proportion(%)");
 
@@ -540,7 +550,7 @@ d3.csv(eth).then(function(data){
 
 	var color = d3.scaleOrdinal()
       .domain(subgroups)
-      .range(['#e41a1c','#377eb8','#4daf4a', '#ffa500']);
+      .range(["#9ac6a3",'#7ea8e2','#cc94c5', '#dca684']);
 
 
     var asian_y = [];
@@ -642,7 +652,7 @@ d3.csv(eth).then(function(data){
           .attr("y",yPos +height/2)
           .attr("class",".tooltip")
           .attr("id", "textShow")
-          .text(d.name +": "+ d.value);  // delta
+          .text(d.name +": "+ d.value + "%");  // delta
           //console.log(svg_t.select("text"));
           
        })
@@ -672,7 +682,8 @@ d3.csv(eth).then(function(data){
     var sortBy;
     var width = 420;
     legend.append("rect")
-      .attr("x", width - 18)
+      .attr("x", width + 250)
+      .attr("y", 25)
       .attr("width", 18)
       .attr("height", 18)
       .style("fill", color)
@@ -707,10 +718,10 @@ d3.csv(eth).then(function(data){
             }
 
             //enable sort checkbox
-            d3.select("label").select("input").property("disabled", false) // input is not a class 
-            d3.select("label").style("color", "black")
+            d3.select("#CheckBoxBar").property("disabled", false) // input is not a class 
+            d3.select("#CheckBoxBar").style("color", "black")
             //sort the bars if checkbox is clicked            
-            d3.select("input").on("change", change);  
+            d3.select("#CheckBoxBar").on("change", change);  
            
         } else { //deactivate
           if (active_link === this.id.split("id").pop()) {//active square selected; turn it OFF
@@ -729,9 +740,8 @@ d3.csv(eth).then(function(data){
             }
             
             //disable sort checkbox
-            d3.select("label")
+            d3.select("#CheckBoxBar")
               .style("color", "#D8D8D8")
-              .select("input")
               .property("disabled", true)
               .property("checked", false);   
 
@@ -753,8 +763,8 @@ d3.csv(eth).then(function(data){
 
 
 	  legend.append("text")
-		  .attr("x", width - 24)
-		  .attr("y", 9)
+		  .attr("x", width + 230)
+		  .attr("y", 35)
 		  .attr("dy", ".35em")
 		  .style("text-anchor", "end")
 		  .text(function(d) { return d; });
@@ -766,7 +776,7 @@ d3.csv(eth).then(function(data){
 	          .transition()
 	          .duration(1000)
 	          .delay(function() {
-	            if (restoreXFlag) return 3000;
+	            if (restoreXFlag) return 400;
 	            else return 750;
 	          })
 	          .attr("width", xt.bandwidth()) //restore bar width //
@@ -778,7 +788,7 @@ d3.csv(eth).then(function(data){
 	      .transition()
 	      .duration(1000)
 	      .delay(function () {
-	        if (restoreXFlag) return 2000; //bars have to be restored to orig posn
+	        if (restoreXFlag) return 400; //bars have to be restored to orig posn
 	        else return 0;
 	      })
 	      .attr("y", function(d) {
@@ -833,7 +843,7 @@ d3.csv(eth).then(function(data){
 	  function change() {
 	  	// this.checked
 	  	
-	    if (d3.select("label").select("input").property("checked")) sortDescending = true;
+	    if (d3.select("#CheckBoxBar").property("checked")) sortDescending = true;
 	    else sortDescending = false;
 
 	    var colName = legendClassArray_orig[sortBy];
