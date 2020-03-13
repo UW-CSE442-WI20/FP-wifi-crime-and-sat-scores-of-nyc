@@ -8,6 +8,8 @@ import sdCentersCsv from './school_district_centers.csv';
 import sdScoreAvgsCsv from './district_score_avgs.csv';
 import sdDataCsv from './districtData.csv'
 import noiseCsv from './party_in_nyc.csv'
+import districtpartycsv from "./districtNoise.csv";
+import districtweefeecsv from "./districtWifi.csv";
 
 const schoolName = 'School Name';
 const math = 'Average Score (SAT Math)';
@@ -1085,4 +1087,62 @@ d3.csv(sdDataCsv).then(function(data) {
     [0, 3000], null, 0, null);
   createSection('#map-income', maps.get(alias.get('income')), 1, HSL,
     [0, 150000], null, 0, null);
+
+
+  // party map
+  d3.csv(districtpartycsv).then(function (data) {
+      var partyMap = new Map();
+      data.forEach(function(d) {
+          partyMap.set(parseInt(d.District), parseInt(d.Noise));
+      })
+  
+      createSection("#party-map", partyMap, 1, HSL, [0, 4200], null, 0, null)
+  })
+
+  $("#party-map").hide();
+
+  $(".reveal-btn").click(function() {
+    $("#party-map").slideToggle(700);
+
+    var img = $("#boroughMapImg")[0];
+
+    if (img.style["visibility"] === "visible") {
+      $("#boroughMapImg").css({opacity: 1.0}).animate({opacity: 0}, 700);
+      img.style["visibility"] = "hidden";
+    } else if (img.style["visibility"] === "hidden") {
+      console.log("changing to visible");
+      img.style["visibility"] = "visible";
+      $("#boroughMapImg").css({opacity: 0}).animate({opacity: 1.0}, 700);
+    }
+
+  });
+
+  // wifi map
+  d3.csv(districtweefeecsv).then(function (data) {
+    var partyMap = new Map();
+    data.forEach(function(d) {
+        partyMap.set(parseInt(d.District), parseInt(d.Wifi));
+    })
+
+    createSection("#weefee-map", partyMap, 1, HSL, [0, 120], null, 0, null)
+  })
+
+$("#weefee-map").hide();
+
+$(".reveal-btn2").click(function() {
+  $("#weefee-map").slideToggle(700);
+
+  var img = $("#boroughMapImg2")[0];
+
+  if (img.style["visibility"] === "visible") {
+    $("#boroughMapImg2").css({opacity: 1.0}).animate({opacity: 0}, 700);
+    img.style["visibility"] = "hidden";
+  } else if (img.style["visibility"] === "hidden") {
+    console.log("changing to visible");
+    img.style["visibility"] = "visible";
+    $("#boroughMapImg2").css({opacity: 0}).animate({opacity: 1.0}, 700);
+  }
+
+});
+    
 });
