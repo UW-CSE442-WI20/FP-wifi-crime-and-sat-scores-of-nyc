@@ -11,17 +11,232 @@
       #reading {
         padding-top: 0px;
       }
+
+      .axis path,
+      .axis line {
+        fill: none;
+        stroke: #000;
+        shape-rendering: crispEdges;
+      }
+
+      .bar {
+        fill: steelblue;
+      }
+
+      .x.axis path {
+        display: none;
+      }
+
+      .tooltip{
+        text-anchor: middle;
+        font-family: sans-serif;
+        font-size: 7px; 
+        font-weight: bold;
+        fill:black; 
+      }
+
+
+      .dot {
+        stroke: none;
+      }
+
+      label-custom {
+        position: relative;
+        top: 140px;    
+        right: -590px;
+        color: black;
+      }
+
     </style>
 
     <!-- Bootstrap -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
     <script src="https://d3js.org/d3.v5.js" ></script>
     <script src="https://unpkg.com/d3-simple-slider" c></script>
+
+    <link rel="stylesheet" href="./party.css">
+    <link rel="stylesheet" href="./weefee.css">
+    <link rel="stylesheet" href="./ethnicity.css">
   </head>
 
   <body>
     <div id="fullpage">
       <div class="section active" data-anchor="slide1">
+         <!-- Introduction -->
+        <div class="introduction">
+          <div class="introduction-section">
+            <h3>Introduction</h3>
+            <p>
+              A higher SAT score for a school normally means a higher graduation rate for the school students, which is pretty evident from the from the graph showcased below.
+              But what factors are involved in ensuring a high SAT score or even a low SAT score for that matter? This is exactly what we are going to try and answer in the following few sections of this project.
+            </p>      
+            <hr>
+            <div class="row">
+              <div class="col-lg-6" id="vizIntro"> </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="section" data-anchor="slide2">
+        <div class = "row"> 
+          <p>
+            Income Variable :
+            One of the factors that we wanted to look at, which could possibly affect the SAT score results of the New York schools was the mean income level of the house holds. One of the reasons behind it was having a higher mean income means access to more facilities such as private coaching, private schools etc and we wanted to know whether there was any correlation between the income and the SAT results.
+
+            So we plotted the mean income of the different school districts along with their mean SAT scores and as you can see there is a small positive correlation between the two factors. As a result, income and SAT scores are somewhat related to each other, even though they might not have a profound effect on each other.
+          </p>
+          <div class="col-lg-6" id="vizIntro2"> 
+            <label><input type="checkbox" id="CheckBoxIncome"> Regressional line</label>
+          </div>
+        </div>
+      </div>
+
+      <div class="section" data-anchor="slide3">
+        <!-- party -->
+        <div class="party">
+          <div class="party-section">
+            <h3>Party Party</h3>
+            <hr>
+            <div class="row">
+              <div class="col-lg-6" id="viz">
+                <div class="row">
+                  <div class="col-sm-2 borough-title">
+                    <h4>Borough</h4>
+                  </div>
+                  <div class="col-sm-4 left-circle-title">
+                    <h5>Total Noise Complaints</h5>
+                  </div>
+                  <div class="col-sm-4 right-circle-title">
+                    <h5>Noise Complaints per Square Mile</h5>
+                  </div>
+                </div>
+              </div>
+              <div class="col-lg-5 story-to-tell">
+                <h4>A story to tell</h4>
+                <br/>
+                <p>
+                  Here we have a visualization of the total noise complaints in each New York City borough from
+                  the year 2014-2015. How might noise complaints affect SAT scores of high schools in each bourough?
+                  What happens when we factor in noise complaints per square mile?
+                </p>
+                <button class="reveal-btn">Tell me more...</button>
+                <p class="reveal-text">
+                  We reveal the true, more relative circle sizes based off the <b>noise complaint density.</b>
+                  Note how the circle sizes change once square mileage is factored into the picture.<br/>
+                  How might the level of noise complaints correlate with crime, income, and even WiFi?
+                </p>
+
+                <br/>
+                <br/>
+                <br/>
+
+                <div class="row" >
+                  <div class="col-sm-6">
+                    <div id="boroughMap" >
+                      <img src="nycboroughs.jpg" id="boroughMapImg" style="visibility: hidden;" />
+                    </div>
+                  </div>
+                  <div class="col-sm-5" id="genMap">
+                    <div id="party-map">
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="section" data-anchor="slide4">
+        <!-- weefee -->
+        <div class="weefee">
+          <div class="weefee-section">
+            <h3>Weefee</h3>
+            <hr>
+            <div class="row">
+              <div class="col-lg-6" id="viz2">
+                <div class="row">
+                  <div class="col-sm-2 borough-title">
+                    <h4>Borough</h4>
+                  </div>
+                  <div class="col-sm-4 left-circle-title">
+                    <h5>Total Wifi Hotspot Locations</h5>
+                  </div>
+                  <div class="col-sm-4 right-circle-title2">
+                    <h5>Wifi Hotspots per Square Mile</h5>
+                  </div>
+                </div>
+              </div>
+              <div class="col-lg-5 story-to-tell">
+                <h4>The story goes on</h4>
+                <br/>
+                <p>
+                  Now we have a visualization of the total wifi hotspots in each New York City borough from
+                  the year 2014-2015. How might wifi hotspot presence affect SAT scores of high schools in each bourough?
+                  What happens when we factor in the number of hotspots per square mile?
+                </p>
+                <button class="reveal-btn2">Tell me more...</button>
+                <p class="reveal-text2">
+                  We reveal the true, more relative circle sizes based off the <b>wifi hotspot density.</b>
+                  Note how the circle sizes change once square mileage is factored into the picture.<br/>
+                  How might the density of wifi hotspots correlate with crime, income, and even noise complaints?
+                </p>
+
+                <br/>
+                <br/>
+                <br/>
+
+                <div class="row" >
+                  <div class="col-sm-6">
+                    <div id="boroughMap2" >
+                      <img src="nycboroughs.jpg" id="boroughMapImg2" style="visibility: hidden;" />
+                    </div>
+                  </div>
+                  <div class="col-sm-5" id="genMap2">
+                    <div id="weefee-map">
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="section" data-anchor="slide5">
+        <!-- Ethnicity -->
+        <div class="ethnicity">
+          <div class="ethnicity-section">
+            <h3>Ethnicity</h3>
+            <p>
+              Ethnicity of a student is another interesting aspect to look at while searching for different factors that could affect the SAT score. Does belonging to a different ethnicity actually have an advantage or is it just a misconception?
+
+              In order to tackle that, we will compare the distribution of the 4 ethnicities: asian, black, hispanic and white in the 10 different score intervals, where each interval contains 100 SAT scores, and see if any particular ethnicity has a larger presence in particular score intervals or are each of them randomly distributed.
+            <p>
+
+            <hr>
+            
+            <div class="row">
+              <div class="col-lg-6" id="viz3"> 
+                <p>
+                  Click at different legend to specify data of certain ethnicity. 
+                  Check the box to sort the value ascendingly.
+                </p>
+                <label><input type="checkbox" id="CheckBoxBar"> Sort values</label>
+              </div>
+              <!-- <div class="col-lg-6" id="viz4"> 
+                <label><input type="checkbox" id="checkBox"> Regressional line</label>
+              </div>
+                <div class="col-lg-6" id="viz5">  </div> -->
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="section" data-anchor="slide6">
         <div class="d-flex flex-row">
           <div class="col-1"></div>
     
@@ -104,10 +319,6 @@
           </div>
         </div>
       </div>
-      
-      <div class="section" data-anchor="slide2"><h1>Section 2</h1></div>
-      <div class="section" data-anchor="slide3"><h1>Section 3</h1></div>
-      <div class="section" data-anchor="slide4"><h1>Section 4</h1></div>
     </div>
 
     <script src="./index.js"></script>
@@ -115,6 +326,10 @@
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script> 
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script src="./party.js"></script>
+    <script src="./weefee.js"></script>
+    <script src="./index_section.js"></script>
   </body>
 
   <body>   
