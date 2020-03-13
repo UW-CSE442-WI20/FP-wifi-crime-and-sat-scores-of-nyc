@@ -97,6 +97,32 @@ d3.csv(work).then(function(data){
     };
 
 
+   // Regression Line mouseover event handler
+   var regMouseover = function(d) {
+    console.log("Show");
+    var html  = "Slope : 8.6732" + "<br/>" +
+                "Intercept : 645.8" + "</span> <br/>";    // Can make the K bold.
+               
+
+    tooltip.html(html)
+        .style("left", xg(75) + 80 - 40 + "px")
+        .style("top", yg(1200) - 30 + "px")
+      .transition()
+        .duration(100) // ms
+        .style("opacity", .9) // started as 0!
+
+    };
+
+
+    // // Regression Line mouseout event handler
+    var regMouseout = function(d) {
+        console.log("out");
+        tooltip.transition()
+            .duration(100) // ms
+            .style("opacity", 0); // don't care about position!
+    };
+
+
 
 
 
@@ -111,6 +137,18 @@ d3.csv(work).then(function(data){
         .style("fill", "#008080")
         .on("mouseover", tipMouseover)
         .on("mouseout", tipMouseout);
+
+  svg_grad.append("line")
+    .style("stroke", "blue")  // colour the line
+    .style("stroke-width", 3)
+    .style("opacity", 0.5)
+    .attr("id", "reg")
+    .attr("x1", xg(52) + 70)     // x position of the first end of the line
+    .attr("y1", yg(1096) + 60)      // y position of the first end of the line
+    .attr("x2", xg(93) + 70)     // x position of the second end of the line
+    .attr("y2", yg(1452) + 60)
+    .on("mouseover", regMouseover)
+    .on("mouseout", regMouseout);
 
   
 
@@ -313,12 +351,14 @@ d3.csv(districtData).then(function(data){
     	 if (d3.select("#checkBox").property("checked"))
     	 {
     	 	svg_income.append("line")
-			.style("stroke", "black")  // colour the line
-			.attr("id", "reg")
-			.attr("x1", x(data_income[0][0]) + 70)     // x position of the first end of the line
-			.attr("y1", y(data_income[0][1]) + 60)      // y position of the first end of the line
-			.attr("x2", x(data_income[12][0]) + 70)     // x position of the second end of the line
-			.attr("y2", y(data_income[12][1]) + 60);  
+        	.style("stroke", "blue")  // colour the line
+          .style("stroke-width", 3)
+          .style("opacity", 0.5)
+        	.attr("id", "reg")
+        	.attr("x1", x(25000) + 70)     // x position of the first end of the line
+        	.attr("y1", y(1206) + 60)      // y position of the first end of the line
+        	.attr("x2", x(140000) + 70)     // x position of the second end of the line
+        	.attr("y2", y(1402) + 60);  
     	 }
     	 else{
     	 	svg_income.select("#reg").remove();
