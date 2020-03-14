@@ -1,0 +1,52 @@
+.party-section {
+
+    border-style: solid;
+    border-color: black;
+    border-width: 2px;
+    margin-left: 50px;
+    margin-right: 50px;
+    margin-top: 10px;
+    padding-left: 50px;
+    padding-top: 20px;
+    padding-right: 50px;
+    padding-bottom: 20px;
+    height: 750px;
+
+}
+
+#boroughMapImg {
+    height: 300px;
+    width: 300px;
+}
+
+.party {
+    height: 100%;
+    width: 100%;
+}
+
+.reveal-btn {
+    margin-top: 10px;
+    margin-bottom: 20px;
+}
+
+.left-circle-title {
+    padding-left: 25px;
+    padding-top: 20px;
+    margin-left: 45px;
+}
+
+.right-circle-title {
+    padding-top: 20px;
+    margin-left: 10px;
+}
+
+.borough-title {
+    padding-top: 20px;
+    padding-left: 15px;
+}
+
+.story-to-tell {
+    padding-top: 20px;
+}
+
+/*# sourceMappingURL=https://uw-cse442-wi20.github.io/FP-wifi-crime-and-sat-scores-of-nyc/party.ef4f780d.css.map */

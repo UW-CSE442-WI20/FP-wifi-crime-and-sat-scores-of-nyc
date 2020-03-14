@@ -9,6 +9,41 @@
 
     <style>#reading {
         padding-top: 0px;
+      }
+
+      .axis path,
+      .axis line {
+        fill: none;
+        stroke: #000;
+        shape-rendering: crispEdges;
+      }
+
+      .bar {
+        fill: steelblue;
+      }
+
+      .x.axis path {
+        display: none;
+      }
+
+      .tooltip{
+        text-anchor: middle;
+        font-family: sans-serif;
+        font-size: 7px; 
+        font-weight: bold;
+        fill:black; 
+      }
+
+
+      .dot {
+        stroke: none;
+      }
+
+      label-custom {
+        position: relative;
+        top: 140px;    
+        right: -590px;
+        color: black;
       }</style>
 
     <!-- Bootstrap -->
@@ -16,18 +51,139 @@
     <script src="https://d3js.org/d3.v5.js"></script>
     <script src="https://unpkg.com/d3-simple-slider" c=""></script>
 
-    <link rel="stylesheet" href="https://uw-cse442-wi20.github.io/FP-wifi-crime-and-sat-scores-of-nyc/party.0fc13805.css">
-    <link rel="stylesheet" href="https://uw-cse442-wi20.github.io/FP-wifi-crime-and-sat-scores-of-nyc/weefee.fe1fd2f0.css">
+    <link rel="stylesheet" href="https://uw-cse442-wi20.github.io/FP-wifi-crime-and-sat-scores-of-nyc/party.ef4f780d.css">
+    <link rel="stylesheet" href="https://uw-cse442-wi20.github.io/FP-wifi-crime-and-sat-scores-of-nyc/weefee.22dd2e2d.css">
+    <link rel="stylesheet" href="https://uw-cse442-wi20.github.io/FP-wifi-crime-and-sat-scores-of-nyc/ethnicity.b96bfb38.css">
   </head>
 
   <body>
+    <div id="fullpage">
+      <div class="section active" data-anchor="slide1">
+         <!-- Introduction -->
+        <div class="introduction">
+          <div class="introduction-section">
+            <h1 style="color:darkviolet;">What Factors Affect SAT Scores?</h1>
+            <h5>
+              We will be investigating the effects of income, crime, ethnicity, wi-fi availability, and noise complaints on the SAT Scores in New York City.
+            </h5>
+            <hr>
 
-    <!-- party -->
-    <div class="party">
-      <div class="party-section">
-        <h3>Party Party</h3>
-        <hr>
-        <div class="row">
+            <div class="d-flex flex-row" style="margin-top: 50px;">
+              <div class="col-6">
+                <p>
+                  A higher SAT score for a school normally means a higher graduation rate for the school students, which is pretty evident from the from the graph showcased below.
+                  But what factors are involved in ensuring a high SAT score or even a low SAT score for that matter? This is exactly what we are going to try and answer in the following few sections of this project.
+                </p>      
+                
+                <div class="row">
+                  <div class="col-lg-6" id="vizIntro"> </div>
+                </div>
+              </div>
+
+              <div class="col-6"> 
+                <div id="map-sat" style="margin-left: 50px"></div>
+                <div id="legend-sat" style="margin-left: 50px;"></div>
+                <p style="margin-left: 60px; margin-top: 30px;">Heat Map Showing Distribution of SAT Scores in NYC</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="section" data-anchor="slide2">
+         <!-- Income -->
+         <div class="introduction">
+          <div class="introduction-section">
+            <h1 style="color:darkblue;">Income Level</h1>
+            <h5>
+              Does income affect SAT Scores in New York City?
+            </h5>
+            <hr>
+
+            <div class="d-flex flex-row" style="margin-top: 50px;">
+              <div class="col-6">
+                <p>
+                  One of the factors that we wanted to look at, which could possibly affect the SAT score results of the New York schools was the mean income level of the house holds. One of the reasons behind it was having a higher mean income means access to more facilities such as private coaching, private schools etc and we wanted to know whether there was any correlation between the income and the SAT results.
+                </p>   
+                
+                <p style="margin-top: 50px;">
+                  We plotted the mean income of the different school districts along with their mean SAT scores and as you can see there is a small positive correlation between the two factors. As a result, income and SAT scores are somewhat related to each other, even though they might not have a strong correlation.
+                </p>
+                
+                <div class="col-lg-6" id="vizIntro2" style="margin-top: 45px;"> 
+                  <label><input type="checkbox" id="CheckBoxIncome"> Regressional line</label>
+                </div>
+              </div>
+
+              <div class="col-6"> 
+                <div id="map-income" style="margin-left: 50px"></div>
+                <div id="legend-income" style="margin-left: 50px;"></div>
+                <p style="margin-left: 80px; margin-top: 30px;">Heat Map Showing Distribution of Income in NYC</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="section" data-anchor="slide3">
+        <!-- Ethnicity -->
+        <div class="introduction">
+         <div class="introduction-section">
+           <h1 style="color:darkgreen;">Ethnicity</h1>
+           <h5>
+             Do areas having a single dominant ethnicity affect SAT Scores in New York City?
+           </h5>
+           <hr>
+
+           <div class="d-flex flex-row" style="margin-top: 50px;">
+             <div class="col-6">
+               <p>
+                Does belonging to a different ethnicity actually have an advantage or is it just a misconception?  In order to tackle that, we will compare the distribution of the 4 ethnicities: asian, black, hispanic and white in the 10 different score intervals.
+               </p> 
+
+               <p>
+                Click a different box within the legend to the right to specify data of certain ethnicity. Then, check the "sort values" box to sort by bucket size. Click the box again to exit and return to the default view.
+               </p>   
+               
+               <div class="row">
+                <div class="col-lg-6" id="viz3"> 
+                  <label><input type="checkbox" id="CheckBoxBar"> Sort values</label>
+                </div>
+              </div>
+               
+             </div>
+
+             <div class="col-3"> 
+               <div id="map-hispanic" style="margin-left: 100px"></div>
+               <p style="margin-left: 140px; margin-top: 30px;">Hispanic Distribution</p>
+
+               <div id="map-white" style="margin-left: 100px"></div>
+               <p style="margin-left: 140px; margin-top: 30px;">White Distribution</p>
+             </div>
+
+             <div class="col-3"> 
+              <div id="map-black" style="margin-left: 50px"></div>
+              <p style="margin-left: 140px; margin-top: 30px;">Black Distribution</p>
+
+              <div id="map-asian" style="margin-left: 50px"></div>
+              <p style="margin-left: 140px; margin-top: 30px;">Asian Distribution</p>
+            </div>
+           </div>
+         </div>
+       </div>
+     </div>
+
+     <div class="section" data-anchor="slide4">
+      <!-- Noise Complaints -->
+      <div class="introduction">
+       <div class="introduction-section">
+         <h1 style="color:darkred;">Noise Complaints</h1>
+         <h5>
+           Does a high number of parties and noise complaints in an area affect SAT Scores in New York City?
+         </h5>
+         <hr>
+
+         <div class="row" style="margin-top: 30px;">
           <div class="col-lg-6" id="viz">
             <div class="row">
               <div class="col-sm-2 borough-title">
@@ -55,68 +211,98 @@
               Note how the circle sizes change once square mileage is factored into the picture.<br>
               How might the level of noise complaints correlate with crime, income, and even WiFi?
             </p>
+
+
+            <div class="row" style="margin-top: 40px;">
+              <div class="col-sm-6">
+                <div id="boroughMap">
+                  <img src="https://uw-cse442-wi20.github.io/FP-wifi-crime-and-sat-scores-of-nyc/nycboroughs.7d38dca4.jpg" id="boroughMapImg" style="visibility: hidden;">
+                </div>
+              </div>
+              <div class="col-sm-5" id="genMap">
+                <div id="party-map">
+                </div>
+              </div>
+            </div>
+
           </div>
         </div>
-      </div>
-    </div>
 
-    <!-- weefee -->
-    <div class="weefee">
-      <div class="weefee-section">
-        <h3>Weefee</h3>
-        <hr>
-        <div class="row">
-          <div class="col-lg-6" id="viz2">
-            <div class="row">
-              <div class="col-sm-2 borough-title">
-                <h4>Borough</h4>
+       </div>
+     </div>
+   </div>
+
+   <div class="section" data-anchor="slide5">
+    <!-- Wifi -->
+    <div class="introduction">
+     <div class="introduction-section">
+       <h1 style="color:magenta;">Wi-Fi Hotspots</h1>
+       <h5>
+         Does the prevalence of Wi-Fi hotspots affect SAT Scores in New York City?
+       </h5>
+       <hr>
+
+       <div class="row">
+        <div class="col-lg-6" id="viz2">
+          <div class="row">
+            <div class="col-sm-2 borough-title">
+              <h4>Borough</h4>
+            </div>
+            <div class="col-sm-4 left-circle-title">
+              <h5>Total Wifi Hotspot Locations</h5>
+            </div>
+            <div class="col-sm-4 right-circle-title2">
+              <h5>Wifi Hotspots per Square Mile</h5>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-5 story-to-tell">
+          <h4>The story goes on</h4>
+          <br>
+          <p>
+            Now we have a visualization of the total wifi hotspots in each New York City borough from
+            the year 2014-2015. How might wifi hotspot presence affect SAT scores of high schools in each bourough?
+            What happens when we factor in the number of hotspots per square mile?
+          </p>
+          <button class="reveal-btn2">Tell me more...</button>
+          <p class="reveal-text2">
+            We reveal the true, more relative circle sizes based off the <b>wifi hotspot density.</b>
+            Note how the circle sizes change once square mileage is factored into the picture.<br>
+            How might the density of wifi hotspots correlate with crime, income, and even noise complaints?
+          </p>
+
+          <div class="row" style="margin-top: 40px;">
+            <div class="col-sm-6">
+              <div id="boroughMap2">
+                <img src="https://uw-cse442-wi20.github.io/FP-wifi-crime-and-sat-scores-of-nyc/nycboroughs.7d38dca4.jpg" id="boroughMapImg2" style="visibility: hidden;">
               </div>
-              <div class="col-sm-4 left-circle-title">
-                <h5>Total Wifi Hotspot Locations</h5>
-              </div>
-              <div class="col-sm-4 right-circle-title2">
-                <h5>Wifi Hotspots per Square Mile</h5>
+            </div>
+            <div class="col-sm-5" id="genMap2">
+              <div id="weefee-map">
               </div>
             </div>
           </div>
-          <div class="col-lg-5 story-to-tell">
-            <h4>The story goes on</h4>
-            <br>
-            <p>
-              Now we have a visualization of the total wifi hotspots in each New York City borough from
-              the year 2014-2015. How might wifi hotspot presence affect SAT scores of high schools in each bourough?
-              What happens when we factor in the number of hotspots per square mile?
-            </p>
-            <button class="reveal-btn2">Tell me more...</button>
-            <p class="reveal-text2">
-              We reveal the true, more relative circle sizes based off the <b>wifi hotspot density.</b>
-              Note how the circle sizes change once square mileage is factored into the picture.<br>
-              How might the density of wifi hotspots correlate with crime, income, and even noise complaints?
-            </p>
-          </div>
+
         </div>
       </div>
-    </div>
+     </div>
+   </div>
+  </div>
 
-
-    <div id="fullpage">
-      <div class="section active" data-anchor="slide1">
+      <div class="section" data-anchor="slide6">
         <div class="d-flex flex-row">
           <div class="col-1"></div>
     
           <div class="col-5">
-            <div style="width:420px; margin-left: 160px; margin-top: 20px">
+            <div style="width:420px; margin-left: 160px; margin-top: 0px">
               <div id="centered" style="margin: 0 auto; width:420px;">
                 <p><b>Select a feature to underlay as a density map below.</b></p>
               </div>
             </div>
         
-            <div class="btn-group btn-group-toggle" data-toggle="buttons" style="margin-left: 150px; margin-bottom: 25px;">
-              <label class="btn btn-secondary active" id="wifiButton">
-                <input type="radio" name="options" autocomplete="off" checked=""> Wi-Fi Hotspots
-              </label>
-              <label class="btn btn-secondary" id="noiseButton">
-                <input type="radio" name="options" autocomplete="off"> Noise Complaints
+            <div class="btn-group btn-group-toggle" data-toggle="buttons" style="margin-left: 50px; margin-bottom: 25px;">
+              <label class="btn btn-secondary active" id="satButton">
+                <input type="radio" name="options" autocomplete="off"> SAT Score
               </label>
               <label class="btn btn-secondary" id="incomeButton">
                 <input type="radio" name="options" autocomplete="off"> Income
@@ -124,21 +310,18 @@
               <label class="btn btn-secondary" id="arrestsButton">
                 <input type="radio" name="options" autocomplete="off"> Arrests
               </label>
-              <label class="btn btn-secondary" id="whiteButton">
-                <input type="radio" name="options" autocomplete="off"> White
+              <label class="btn btn-secondary" id="ethnicityButton" data-toggle="modal" data-target="#exampleModal">
+                <input type="radio" name="options" autocomplete="off"> Ethnicity
               </label>
-              <label class="btn btn-secondary" id="blackButton">
-                <input type="radio" name="options" autocomplete="off"> Black
+              <label class="btn btn-secondary" id="noiseButton">
+                <input type="radio" name="options" autocomplete="off"> Noise Complaints
               </label>
-              <label class="btn btn-secondary" id="asianButton">
-                <input type="radio" name="options" autocomplete="off"> Asian
-              </label>
-              <label class="btn btn-secondary" id="hispanicButton">
-                <input type="radio" name="options" autocomplete="off"> Hispanic
+              <label class="btn btn-secondary" id="wifiButton">
+                <input type="radio" name="options" autocomplete="off" checked=""> Wi-Fi Hotspots
               </label>
             </div>
         
-            <div style="width:600px; margin-left: 70px; margin-bottom: 20px;">
+            <div style="width:600px; margin-left: 60px; margin-bottom: 20px;">
               <div id="centered" style="margin: 0 auto; width:600px;">
                 <p>Click on a school district on the map below to display its overall SAT stats, or go ahead and select a specific school on the map to the right for school-specific SAT stats.</p>
               </div>
@@ -146,21 +329,12 @@
     
             <div id="map" style="margin-left: 50px"></div>  <!-- map element -->
           </div>
-
-          <div id="legend-sat"></div>
-          <div id="legend-ethWhite"></div>
-          <div id="legend-ethBlack"></div>
-          <div id="legend-ethHispanic"></div>
-          <div id="legend-ethAsian"></div>
-          <div id="legend-wifi"></div>
-          <div id="legend-noise"></div>
-          <div id="legend-crime"></div>
-          <div id="legend-income"></div>
     
           <div class="col-5" style="margin-left:30px">  <!-- distribution chart and zoomed in map -->
             <div id="stats" style="background-color:white; margin-top:30px; margin-bottom:20px; margin-left:2px"> </div>
-            <div id="chart1" style="background-color:white; margin-bottom:30px;"> </div>
-            <div id="map-zoomed" style="background-color:white; margin-left:20px">
+            <div id="chart1" style="background-color:white; margin-bottom:70px;"> </div>
+            <div id="legend" style="background-color:white; margin-left:50px;"></div>
+            <div id="map-zoomed" style="background-color:white; margin-left:70px">
             </div>
           </div> 
     
@@ -183,51 +357,55 @@
             <div id="writing" class="d3-slider d3-slider-horizontal"></div>  <!-- slider element -->
             <p id="writingText" class="text-center">Average Score (SAT Writing)</p>
           </div>
-        </div>    
-      </div>
-
-      <div class="section" data-anchor="slide2">
-        <h4>SAT Scores</h4>
-        <div class="small-map" id="map-sat" style="float: left;"></div>
-      </div>
-
-      <div class="section" data-anchor="slide3">
-        <h4>Ethnicity White - Black - Hispanic - Asian</h4>
-        <div class="small-map" id="map-eth-white" style="float: left;"></div>
-        <div class="small-map" id="map-eth-black" style="float: left;"></div>
-        <div class="small-map" id="map-eth-hispanic" style="float: left;"></div>
-        <div class="small-map" id="map-eth-asian" style="float: left;"></div>
-      </div>
-
-      <div class="section" data-anchor="slide4">
-        <h4>Wi-Fi</h4>
-        <div class="small-map" id="map-wifi"></div>
-      </div>
-
-      <div class="section" data-anchor="slide5">
-        <h4>Noise</h4>
-        <div class="small-map" id="map-noise"></div>
-      </div>
-
-      <div class="section" data-anchor="slide6">
-        <h4>Crime</h4>
-        <div class="small-map" id="map-crime"></div>
-      </div>
-
-      <div class="section" data-anchor="slide7">
-        <h4>Income</h4>
-        <div class="small-map" id="map-income"></div>
+        </div> 
+        
+        <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Choose an Ethnicity</h5>
+              </div>
+              <div class="modal-body">
+                <button id="asianButton" type="button" class="btn btn-primary" data-dismiss="modal">Asian</button>
+                <button id="blackButton" type="button" class="btn btn-primary" data-dismiss="modal">Black</button>
+                <button id="hispanicButton" type="button" class="btn btn-primary" data-dismiss="modal">Hispanic</button>
+                <button id="whiteButton" type="button" class="btn btn-primary" data-dismiss="modal">White</button>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
 
-    <script src="https://uw-cse442-wi20.github.io/FP-wifi-crime-and-sat-scores-of-nyc/src.136be5d0.js"></script>
+    <script src="https://uw-cse442-wi20.github.io/FP-wifi-crime-and-sat-scores-of-nyc/src.0d812d14.js"></script>
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script> 
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
-    <script src="https://uw-cse442-wi20.github.io/FP-wifi-crime-and-sat-scores-of-nyc/party.a5c0dade.js"></script>
-    <script src="https://uw-cse442-wi20.github.io/FP-wifi-crime-and-sat-scores-of-nyc/weefee.5d3ec77f.js"></script>
+    <script src="https://uw-cse442-wi20.github.io/FP-wifi-crime-and-sat-scores-of-nyc/party.28d545e9.js"></script>
+    <script src="https://uw-cse442-wi20.github.io/FP-wifi-crime-and-sat-scores-of-nyc/weefee.ad36aa12.js"></script>
+    <script src="https://uw-cse442-wi20.github.io/FP-wifi-crime-and-sat-scores-of-nyc/index_section.bb3595ab.js"></script>
   </body>
+
+  <body>   
+    
+    
+
+    <!-- <div id="fullpage">
+      <div class="section">One</div>
+      <div class="section">
+          <div class="slide" data-anchor="slide1">Two 1</div>
+          <div class="slide" data-anchor="slide2">Two 2</div>
+      </div>
+      <div class="section">Three</div>
+      <div class="section">Four</div>
+    </div>
+   <script src="./test.js"></script> -->
+    
+
+
+  </body>
+
 
 </html>
