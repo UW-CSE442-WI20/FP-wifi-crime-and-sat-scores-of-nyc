@@ -33,27 +33,27 @@ let createScale = function(domain) {
 
 ///////// COLOR SCHEMES & SCALES // see: https://github.com/d3/d3-scale-chromatic /////
 var schemeIncome = d3.interpolateBlues;
-var domainIncome = [150000, 1];
+var domainIncome = [160000, 0];
 var scaleIncome = createScale(domainIncome)
 
 var schemeCrime = d3.interpolateGreens;
-var domainCrime = [3000, 1];
+var domainCrime = [3000, 0];
 var scaleCrime = createScale(domainCrime)
 
 var schemeAsian = d3.interpolateYlOrBr;
-var domainAsian = [100, 1];
+var domainAsian = [100, 0];
 var scaleAsian = createScale(domainAsian)
 
 var schemeBlack = d3.interpolateGreys;
-var domainBlack = [100, 1];
+var domainBlack = [100, 0];
 var scaleBlack = createScale(domainBlack)
 
 var schemeHispanic = d3.interpolateOrRd;
-var domainHispanic = [100, 1];
+var domainHispanic = [100, 0];
 var scaleHispanic = createScale(domainHispanic)
 
 var schemeWhite = d3.interpolateBuGn;
-var domainWhite = [100, 1];
+var domainWhite = [100, 0];
 var scaleWhite = createScale(domainWhite)
 
 var schemeWifi = d3.interpolatePuRd;
@@ -61,7 +61,7 @@ var domainWifi = [120, 0];
 var scaleWifi = createScale(domainWifi);
 
 var schemeNoise = d3.interpolateReds;
-var domainNoise = [4200, 0];
+var domainNoise = [5000, 0];
 var scaleNoise = createScale(domainNoise);
 
 var schemeSat = d3.interpolatePurples;
@@ -82,14 +82,14 @@ var alias = new Map(); // Map{feature_name: alias}
 var maps = new Map(); // Map{feature: Map{sd#: value}}
 
 d3.csv(sdDataCsv).then(function(data) {
-  for (var i = 0; i <= columns.length; i++) {
+  for (var i = 0; i < columns.length; i++) {
     alias.set(short_names[i], columns[i])
     maps.set(columns[i], new Map())
   }
 
   data.forEach(function(row) { // Create map for each feature
     var sd = +row.District;
-    for (var i = 0; i <= columns.length; i++) {
+    for (var i = 0; i < columns.length; i++) {
       var column = columns[i];
       if (!isNaN(sd)) {
         maps.get(column).set(sd, +row[column]);
@@ -99,9 +99,9 @@ d3.csv(sdDataCsv).then(function(data) {
   });
 });
 
-var currentData = maps.get(alias.get('income'));
-var currentScheme = schemeIncome;
-var currentScale = scaleIncome;
+var currentData = null;
+var currentScheme = schemeSat;
+var currentScale = scaleSat;
 
 /* Creates a color legend.
 div: div id string
@@ -139,7 +139,7 @@ let generateLegend = function(svg, gradientName, w, h, scheme, domain, ticks) {
     .attr("width", w)
     .attr("height", h - 30)
     .style("fill", "url(#" + gradientName + ")")
-    .attr("transform", "translate(0,10)");
+    .attr("transform", "translate(10,10)");
   var y = d3.scaleLinear()
     .range([w, 0])
     .domain(domain);
@@ -148,7 +148,7 @@ let generateLegend = function(svg, gradientName, w, h, scheme, domain, ticks) {
     .ticks(ticks);
   svg.append("g")
     .attr("class", "y axis")
-    .attr("transform", "translate(0,30)")
+    .attr("transform", "translate(10,30)")
     .call(yAxis)
     .append("text")
     .attr("transform", "rotate(-90)")
@@ -192,7 +192,14 @@ let generateLargeMap = function(svg, projection, scheme, scale, data) {
         .attr('id', 'currentPath')
         .attr('d', path)
         .attr('stroke', mapStrokeColor)
-        .attr('stroke-width', mapStrokeWidth)
+        .attr('stroke-width', function(d) {
+          if (selected && d.properties.SchoolDist === +selected.id.substring(2)) {
+            selected = this;
+            return selectedStrokeWidth;
+          } else {
+            return mapStrokeWidth;
+          }
+        })
         .attr('fill', function(d) {
           var sd = d.properties.SchoolDist
           var value = data.get(sd);
@@ -329,6 +336,7 @@ let overviewMouseLeave = function(d) { // Unhighlight SD on mouse leave
 };
 
 let overviewMouseClick = function(d) { //De/select SD on mouse click
+  console.log(d)
   var unselect = this === selected;
   if (selected) { // Unselect selected SD if one exists
     statBox.selectAll('text').remove();
@@ -347,11 +355,11 @@ let overviewMouseClick = function(d) { //De/select SD on mouse click
     zSelected = null;
     d3.select(this)
         .transition()
-        .style('opacity', 1)
+        .style('opacity', mapOpacity)
         .attr('stroke-width', selectedStrokeWidth)
         .duration(mouseTransDuration);
     selected = this;
-    updateZMap(+this.id.substring(2), maps.get(alias.get('crimes')), currentScheme, currentScale); // Update zoomed map
+    updateZMap(+this.id.substring(2), currentData, currentScheme, currentScale); // Update zoomed map
     updateDistrictStats(+this.id.substring(2)); // Update text box
   }
 
@@ -929,27 +937,49 @@ d3.csv(sdDataCsv).then(function(data) {
 
   var legend = d3.select('#legend') // Create Map SVG element
   .append('svg')
-  .attr("width", scaleW)
+  .attr("width", scaleW + 30)
   .attr("height", scaleH);
 
-  generateLargeMap(map, largeMapPro, schemeIncome, scaleIncome, maps.get(alias.get('income')));
-  generateLegend(legend, 'gradient-income', scaleW, scaleH, schemeIncome, domainIncome, defaultTicks);
+  generateLargeMap(map, largeMapPro, schemeSat, scaleSat, maps.get(alias.get('score')));
+  generateLegend(legend, 'gradient-score', scaleW, scaleH, schemeSat, domainSat, 8);
+  currentData = maps.get(alias.get('score'));
 
   plotPoints(map, largeMapPro, scores, 'school', pointRadius, pointColor,
             pointStrokeColor, pointStrokeWidth, pointOpacity);
 
   // RADIO BUTTON FUNCTIONALITY /////////////////////////////////////////////////////////////////
+  $('#satButton').on('click', function(event) {
+    d3.select('#map').selectAll('path').remove();
+    d3.select('#map').selectAll('circle').remove();
+    d3.select('#legend').selectAll('defs').remove();
+    d3.select('#legend').selectAll('g').remove();
+    generateLargeMap(map, largeMapPro, schemeSat, scaleSat, maps.get(alias.get('score')));
+    generateLegend(legend, 'gradient-score', scaleW, scaleH, schemeSat, domainSat, 8);
+    plotPoints(map, largeMapPro, scores, 'school', pointRadius, pointColor,
+    pointStrokeColor, pointStrokeWidth, pointOpacity);
+    currentData = maps.get(alias.get('score'));
+    currentScheme = schemeSat;
+    currentScale = scaleSat;
+    if (selected) {
+      updateZMap(+selected.id.substring(2), currentData, currentScheme, currentScale);
+    }
+  });
+  
   $('#incomeButton').on('click', function(event) {
     d3.select('#map').selectAll('path').remove();
     d3.select('#map').selectAll('circle').remove();
     d3.select('#legend').selectAll('defs').remove();
     d3.select('#legend').selectAll('g').remove();
     generateLargeMap(map, largeMapPro, schemeIncome, scaleIncome, maps.get(alias.get('income')));
-    generateLegend(legend, 'gradient-income', scaleW, scaleH, schemeIncome, domainIncome, defaultTicks);
+    generateLegend(legend, 'gradient-income', scaleW, scaleH, schemeIncome, domainIncome, 8);
     plotPoints(map, largeMapPro, scores, 'school', pointRadius, pointColor,
     pointStrokeColor, pointStrokeWidth, pointOpacity);
+    currentData = maps.get(alias.get('income'));
     currentScheme = schemeIncome;
     currentScale = scaleIncome;
+    if (selected) {
+      updateZMap(+selected.id.substring(2), currentData, currentScheme, currentScale);
+    }
   });
 
   $('#arrestsButton').on('click', function(event) {
@@ -961,8 +991,12 @@ d3.csv(sdDataCsv).then(function(data) {
     generateLegend(legend, 'gradient-crime', scaleW, scaleH, schemeCrime, domainCrime, defaultTicks);
     plotPoints(map, largeMapPro, scores, 'school', pointRadius, pointColor,
             pointStrokeColor, pointStrokeWidth, pointOpacity);
+    currentData = maps.get(alias.get('crimes'));
     currentScheme = schemeCrime;
     currentScale = scaleCrime;
+    if (selected) {
+      updateZMap(+selected.id.substring(2), currentData, currentScheme, currentScale);
+    }
   });
 
   $('#asianButton').on('click', function(event) {
@@ -974,8 +1008,13 @@ d3.csv(sdDataCsv).then(function(data) {
     generateLegend(legend, 'gradient-ethAsian', scaleW, scaleH, schemeAsian, domainAsian, defaultTicks);
     plotPoints(map, largeMapPro, scores, 'school', pointRadius, pointColor,
     pointStrokeColor, pointStrokeWidth, pointOpacity);
+    currentData = maps.get(alias.get('asian'));
     currentScheme = schemeAsian;
     currentScale = scaleAsian;
+    console.log(selected)
+    if (selected) {
+      updateZMap(+selected.id.substring(2), currentData, currentScheme, currentScale);
+    }
   });
 
   $('#blackButton').on('click', function(event) {
@@ -987,8 +1026,12 @@ d3.csv(sdDataCsv).then(function(data) {
     generateLegend(legend, 'gradient-ethBlack', scaleW, scaleH, schemeBlack, domainBlack, defaultTicks);
     plotPoints(map, largeMapPro, scores, 'school', pointRadius, pointColor,
     pointStrokeColor, pointStrokeWidth, pointOpacity);
+    currentData = maps.get(alias.get('black'));
     currentScheme = schemeBlack;
     currentScale = scaleBlack;
+    if (selected) {
+      updateZMap(+selected.id.substring(2), currentData, currentScheme, currentScale);
+    }
   });
 
   $('#hispanicButton').on('click', function(event) {
@@ -1000,8 +1043,12 @@ d3.csv(sdDataCsv).then(function(data) {
     generateLegend(legend, 'gradient-ethHispanic', scaleW, scaleH, schemeHispanic, domainHispanic, defaultTicks);
     plotPoints(map, largeMapPro, scores, 'school', pointRadius, pointColor,
     pointStrokeColor, pointStrokeWidth, pointOpacity);
+    currentData = maps.get(alias.get('hispanic'));
     currentScheme = schemeHispanic;
     currentScale = scaleHispanic;
+    if (selected) {
+      updateZMap(+selected.id.substring(2), currentData, currentScheme, currentScale);
+    }
   });
 
   $('#whiteButton').on('click', function(event) {
@@ -1013,8 +1060,12 @@ d3.csv(sdDataCsv).then(function(data) {
     generateLegend(legend, 'gradient-ethWhite', scaleW, scaleH, schemeWhite, domainWhite, defaultTicks);
     plotPoints(map, largeMapPro, scores, 'school', pointRadius, pointColor,
     pointStrokeColor, pointStrokeWidth, pointOpacity);
+    currentData = maps.get(alias.get('white'));
     currentScheme = schemeWhite;
     currentScale = scaleWhite;
+    if (selected) {
+      updateZMap(+selected.id.substring(2), currentData, currentScheme, currentScale);
+    }
   });
 
   $('#wifiButton').on('click', function(event) {
@@ -1026,8 +1077,12 @@ d3.csv(sdDataCsv).then(function(data) {
     generateLegend(legend, 'gradient-wifi', scaleW, scaleH, schemeWifi, domainWifi, defaultTicks);
     plotPoints(map, largeMapPro, scores, 'school', pointRadius, pointColor,
     pointStrokeColor, pointStrokeWidth, pointOpacity);
+    currentData = maps.get(alias.get('wifi'));
     currentScheme = schemeWifi;
     currentScale = scaleWifi;
+    if (selected) {
+      updateZMap(+selected.id.substring(2), currentData, currentScheme, currentScale);
+    }
   });
 
   $('#noiseButton').on('click', function(event) {
@@ -1039,8 +1094,12 @@ d3.csv(sdDataCsv).then(function(data) {
     generateLegend(legend, 'gradient-noise', scaleW, scaleH, schemeNoise, domainNoise, defaultTicks);
     plotPoints(map, largeMapPro, scores, 'school', pointRadius, pointColor,
     pointStrokeColor, pointStrokeWidth, pointOpacity);
+    currentData = maps.get(alias.get('noise'));
     currentScheme = schemeNoise;
     currentScale = scaleNoise;
+    if (selected) {
+      updateZMap(+selected.id.substring(2), currentData, currentScheme, currentScale);
+    }
   });
 
   // SLIDER ELEMENTS //////////////////////////////////////////////////////////////
