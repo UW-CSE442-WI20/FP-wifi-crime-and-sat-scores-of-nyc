@@ -33,27 +33,27 @@ let createScale = function(domain) {
 
 ///////// COLOR SCHEMES & SCALES // see: https://github.com/d3/d3-scale-chromatic /////
 var schemeIncome = d3.interpolateBlues;
-var domainIncome = [150000, 1];
+var domainIncome = [160000, 0];
 var scaleIncome = createScale(domainIncome)
 
 var schemeCrime = d3.interpolateGreens;
-var domainCrime = [3000, 1];
+var domainCrime = [3000, 0];
 var scaleCrime = createScale(domainCrime)
 
 var schemeAsian = d3.interpolateYlOrBr;
-var domainAsian = [100, 1];
+var domainAsian = [100, 0];
 var scaleAsian = createScale(domainAsian)
 
 var schemeBlack = d3.interpolateGreys;
-var domainBlack = [100, 1];
+var domainBlack = [100, 0];
 var scaleBlack = createScale(domainBlack)
 
 var schemeHispanic = d3.interpolateOrRd;
-var domainHispanic = [100, 1];
+var domainHispanic = [100, 0];
 var scaleHispanic = createScale(domainHispanic)
 
 var schemeWhite = d3.interpolateBuGn;
-var domainWhite = [100, 1];
+var domainWhite = [100, 0];
 var scaleWhite = createScale(domainWhite)
 
 var schemeWifi = d3.interpolatePuRd;
@@ -61,7 +61,7 @@ var domainWifi = [120, 0];
 var scaleWifi = createScale(domainWifi);
 
 var schemeNoise = d3.interpolatePurples;
-var domainNoise = [4200, 0];
+var domainNoise = [5000, 0];
 var scaleNoise = createScale(domainNoise);
 
 // var schemeSat = d3.interpolateGnBu;
@@ -139,7 +139,7 @@ let generateLegend = function(svg, gradientName, w, h, scheme, domain, ticks) {
     .attr("width", w)
     .attr("height", h - 30)
     .style("fill", "url(#" + gradientName + ")")
-    .attr("transform", "translate(0,10)");
+    .attr("transform", "translate(10,10)");
   var y = d3.scaleLinear()
     .range([w, 0])
     .domain(domain);
@@ -148,7 +148,7 @@ let generateLegend = function(svg, gradientName, w, h, scheme, domain, ticks) {
     .ticks(ticks);
   svg.append("g")
     .attr("class", "y axis")
-    .attr("transform", "translate(0,30)")
+    .attr("transform", "translate(10,30)")
     .call(yAxis)
     .append("text")
     .attr("transform", "rotate(-90)")
@@ -937,11 +937,11 @@ d3.csv(sdDataCsv).then(function(data) {
 
   var legend = d3.select('#legend') // Create Map SVG element
   .append('svg')
-  .attr("width", scaleW)
+  .attr("width", scaleW + 30)
   .attr("height", scaleH);
 
   generateLargeMap(map, largeMapPro, schemeIncome, scaleIncome, maps.get(alias.get('income')));
-  generateLegend(legend, 'gradient-income', scaleW, scaleH, schemeIncome, domainIncome, defaultTicks);
+  generateLegend(legend, 'gradient-income', scaleW, scaleH, schemeIncome, domainIncome, 8);
   currentData = maps.get(alias.get('income'));
 
   plotPoints(map, largeMapPro, scores, 'school', pointRadius, pointColor,
@@ -954,7 +954,7 @@ d3.csv(sdDataCsv).then(function(data) {
     d3.select('#legend').selectAll('defs').remove();
     d3.select('#legend').selectAll('g').remove();
     generateLargeMap(map, largeMapPro, schemeIncome, scaleIncome, maps.get(alias.get('income')));
-    generateLegend(legend, 'gradient-income', scaleW, scaleH, schemeIncome, domainIncome, defaultTicks);
+    generateLegend(legend, 'gradient-income', scaleW, scaleH, schemeIncome, domainIncome, 8);
     plotPoints(map, largeMapPro, scores, 'school', pointRadius, pointColor,
     pointStrokeColor, pointStrokeWidth, pointOpacity);
     currentData = maps.get(alias.get('income'));
