@@ -2,11 +2,11 @@ import weefee from "./weefee.csv";
 
 const XSTART = 0;
 
-const YSPACING_SCALE = 160;
+const YSPACING_SCALE = 120; // adjust to 100
 const YSPACING_OFFSET = 100;
 
-const RAW_CIRCLE_ADJUSTMENT = 2.5;
-const PROCESSED_CIRCLE_ADJUSTMENT = 16;
+const RAW_CIRCLE_ADJUSTMENT = 2.5; // adjust to 4?
+const PROCESSED_CIRCLE_ADJUSTMENT = 16; // adjust to 1.75?
 
 const TEXT_RAW_CIRCLE_DIST = 230;
 

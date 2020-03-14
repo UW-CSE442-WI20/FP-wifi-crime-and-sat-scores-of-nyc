@@ -18,7 +18,7 @@ const writing = 'Average Score (SAT Writing)';
 
 var fullPageInstance = new fullpage('#fullpage', {
   sectionsColor:['white', 'white', 'white', 'white', 'white', 'white'],
-  anchors:['firstPage', 'secondPage', 'thirdPage', 'fourthPage', 'fifthPage', 'sixthPage'],
+  anchors:['page-1', 'page-2', 'page-3', 'page-4', 'page-5', 'page-6'],
   navigation: true,
   scrollBar: true
 });
@@ -60,13 +60,13 @@ var schemeWifi = d3.interpolatePuRd;
 var domainWifi = [120, 0];
 var scaleWifi = createScale(domainWifi);
 
-var schemeNoise = d3.interpolatePurples;
+var schemeNoise = d3.interpolateReds;
 var domainNoise = [4200, 0];
 var scaleNoise = createScale(domainNoise);
 
-// var schemeSat = d3.interpolateGnBu;
-// var domainSat = [1600, 1000];
-// var scaleSat = createScale(domainSat);
+var schemeSat = d3.interpolatePurples;
+var domainSat = [1600, 1000];
+var scaleSat = createScale(domainSat);
 
 var scaleW = 400;
 var scaleH = 50;
@@ -889,12 +889,12 @@ point_data: point data if points
 points: 1 if points
 name: name to give to points
 */
-let createSection = function(id, heat_data, heat, hsl, domain, point_data, points, name) {
+let createSection = function(id, heat_data, heat, hsl, domain, point_data, points, name, w, h, s) {
   var map = d3.select(id)
   .append('svg')
-    .attr('width', SMALL_MAP_WIDTH)
-    .attr('height', SMALL_MAP_HEIGHT)
-  var projection = createProjection(SMALL_MAP_WIDTH, SMALL_MAP_HEIGHT, SMALL_MAP_SCALE)
+    .attr('width', w)
+    .attr('height', h)
+  var projection = createProjection(w, h, s)
   createMap(map, projection, heat, hsl, domain, heat_data, null, null, null);
   if (points) {
     plotPoints(map, projection, point_data, name, pointRadius, pointColor,
@@ -906,7 +906,7 @@ var SMALL_MAP_SCALE_FACTOR = .5
 var SMALL_MAP_WIDTH = mapWidth * SMALL_MAP_SCALE_FACTOR
 var SMALL_MAP_HEIGHT = mapHeight * SMALL_MAP_SCALE_FACTOR
 var SMALL_MAP_SCALE = mapScale * SMALL_MAP_SCALE_FACTOR
-var HSL = [197,100,100,0]
+var HSL = [310,100,100,0]
 
 d3.csv(sdDataCsv).then(function(data) {
   // BUILDING DEFAULT MAPS ////////////////////////////////////////////////////////////////////////
@@ -1093,23 +1093,71 @@ d3.csv(sdDataCsv).then(function(data) {
   
 
   // CREATING SMALL MAPS
-  createSection('#map-eth-white', maps.get(alias.get('white')), 1, HSL,
-    [0, 100], null, 0, null);
-  createSection('#map-eth-black', maps.get(alias.get('black')), 1, HSL,
-    [0, 100], null, 0, null);
-  createSection('#map-eth-hispanic', maps.get(alias.get('hispanic')), 1, HSL,
-    [0, 100], null, 0, null);
-  createSection('#map-eth-asian', maps.get(alias.get('asian')), 1, HSL,
-    [0, 100], null, 0, null);
+  // var largeMapPro = createProjection(mapWidth, mapHeight, mapScale);
+
+  // var map = d3.select('#map-sat') // Create Map SVG element
+  //   .append('svg')
+  //   .attr('width', mapWidth)
+  //   .attr('height', mapHeight);
+  // map.append('rect') // Create border on Map
+  //   .attr('x', 0)
+  //   .attr('y', 0)
+  //   .attr('height', mapHeight)
+  //   .attr('width', mapWidth)
+  //   .attr('pointer-events', 'all')
+  //   .style('fill', 'none')
+
+  // var legend = d3.select('#legend-sat') // Create Map SVG element
+  // .append('svg')
+  // .attr("width", scaleW)
+  // .attr("height", scaleH);
+
+  // generateLargeMap(map, largeMapPro, schemeIncome, scaleIncome, maps.get(alias.get('income')));
+  // generateLegend(legend, 'gradient-income', scaleW, scaleH, schemeIncome, domainIncome, defaultTicks);
+  
+  createSection('#map-sat', maps.get(alias.get('score')), 1, [310,100,75,0],
+    [1000, 1600], null, 0, null, 400, 400, 50000);
+  var satLegend = d3.select('#legend-sat') // Create Map SVG element
+  .append('svg')
+  .attr("width", scaleW)
+  .attr("height", scaleH);
+  generateLegend(satLegend, 'gradient-scores', scaleW, scaleH, schemeSat, domainSat, defaultTicks);
+  
+  createSection('#map-income', maps.get(alias.get('income')), 1, [285,75,100,0],
+    [0, 150000], null, 0, null, 400, 400, 50000);
+  var satLegend = d3.select('#legend-income') // Create Map SVG element
+  .append('svg')
+  .attr("width", scaleW)
+  .attr("height", scaleH);
+  generateLegend(satLegend, 'gradient-income', scaleW, scaleH, schemeIncome, domainIncome, defaultTicks);
+
+  createSection('#map-hispanic', maps.get(alias.get('hispanic')), 1, [60,75,100,0],
+  [0, 100], null, 0, null, 250, 250, 30000);
+  createSection('#map-white', maps.get(alias.get('white')), 1, [310,75,100,0],
+  [0, 100], null, 0, null, 250, 250, 30000);
+  createSection('#map-black', maps.get(alias.get('black')), 1, [285,75,100,0],
+  [0, 100], null, 0, null, 250, 250, 30000);
+  createSection('#map-asian', maps.get(alias.get('asian')), 1, [500,75,100,0],
+  [0, 100], null, 0, null, 250, 250, 30000);
+
+  // createSection('#map-eth-white', maps.get(alias.get('white')), 1, [310,100,100,0],
+  //   [0, 100], null, 0, null, SMALL_MAP_WIDTH, SMALL_MAP_HEIGHT, SMALL_MAP_SCALE);
+  // createSection('#map-eth-black', maps.get(alias.get('black')), 1, [250,100,100,0],
+  //   [0, 100], null, 0, null, SMALL_MAP_WIDTH, SMALL_MAP_HEIGHT, SMALL_MAP_SCALE);
+  // createSection('#map-eth-hispanic', maps.get(alias.get('hispanic')), 1, HSL,
+  //   [0, 100], null, 0, null, SMALL_MAP_WIDTH, SMALL_MAP_HEIGHT, SMALL_MAP_SCALE);
+  // createSection('#map-eth-asian', maps.get(alias.get('asian')), 1, HSL,
+  //   [0, 100], null, 0, null, SMALL_MAP_WIDTH, SMALL_MAP_HEIGHT, SMALL_MAP_SCALE);
 
   createSection('#map-wifi', maps.get(alias.get('wifi')), 1, HSL,
-    [0, 100], null, 0, null);
+    [0, 100], null, 0, null, SMALL_MAP_WIDTH, SMALL_MAP_HEIGHT, SMALL_MAP_SCALE);
    createSection('#map-noise', maps.get(alias.get('noise')), 1, HSL,
-    [0, 5000], null, 0, null);
+    [0, 5000], null, 0, null, SMALL_MAP_WIDTH, SMALL_MAP_HEIGHT, SMALL_MAP_SCALE);
   createSection('#map-crime', maps.get(alias.get('crimes')), 1, HSL,
-    [0, 3000], null, 0, null);
-  createSection('#map-income', maps.get(alias.get('income')), 1, HSL,
-    [0, 150000], null, 0, null);
+    [0, 3000], null, 0, null, SMALL_MAP_WIDTH, SMALL_MAP_HEIGHT, SMALL_MAP_SCALE);
+
+  // createSection('#map-income', maps.get(alias.get('income')), 1, HSL,
+  //   [0, 150000], null, 0, null, SMALL_MAP_WIDTH, SMALL_MAP_HEIGHT, SMALL_MAP_SCALE);
 
 
   // party map
@@ -1119,7 +1167,7 @@ d3.csv(sdDataCsv).then(function(data) {
           partyMap.set(parseInt(d.District), parseInt(d.Noise));
       })
   
-      createSection("#party-map", partyMap, 1, HSL, [0, 4200], null, 0, null)
+      createSection("#party-map", partyMap, 1, [40,75,100,0], [0, 4200], null, 0, null, SMALL_MAP_WIDTH, SMALL_MAP_HEIGHT, SMALL_MAP_SCALE)
   })
 
   $("#party-map").hide();
@@ -1147,7 +1195,7 @@ d3.csv(sdDataCsv).then(function(data) {
         partyMap.set(parseInt(d.District), parseInt(d.Wifi));
     })
 
-    createSection("#weefee-map", partyMap, 1, HSL, [0, 120], null, 0, null)
+    createSection("#weefee-map", partyMap, 1, HSL, [0, 120], null, 0, null, SMALL_MAP_WIDTH, SMALL_MAP_HEIGHT, SMALL_MAP_SCALE)
   })
 
   $("#weefee-map").hide();
