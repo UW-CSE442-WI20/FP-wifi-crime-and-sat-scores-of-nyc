@@ -23,6 +23,6 @@
     "d3-simple-slider": "^1.5.4",
     "fullpage": "^1.5.1",
     "fullpage.js": "^3.0.8",
-    "jquery": "^3.4.1"
+    "jquery": "^3.5.0"
   }
 }
